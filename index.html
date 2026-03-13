@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City Comparison — Des Moines · Charlotte · Raleigh · Greenville</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Base ── */
+:root {
+  --bg:     #f5f4f0;
+  --bg2:    #eeece8;
+  --card:   #ffffff;
+  --surface:#f9f8f6;
+  --text:   #1a1917;
+  --text2:  #5a5754;
+  --border: #dddad6;
+  --radius: 10px;
+  --dm:     #2563EB;  --dm-soft:  rgba(37,99,235,0.10);
+  --clt:    #16A34A;  --clt-soft: rgba(22,163,74,0.10);
+  --ral:    #D4720F;  --ral-soft: rgba(212,114,15,0.10);
+  --gvl:    #7C3AED;  --gvl-soft: rgba(124,58,237,0.10);
+  --teal:   #0D9488;
+  --win:    rgba(22,163,74,0.13);
+  --warn:   rgba(202,138,4,0.13);
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --nav-h:  52px;
+}
+[data-theme="dark"] {
+  --bg: #111110; --bg2: #1a1918; --card: #1f1e1c; --surface: #171614;
+  --text: #f0ede8; --text2: #9a9590; --border: #2e2c28;
+  --win: rgba(22,163,74,0.18); --warn: rgba(202,138,4,0.18);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+
+/* ── Nav ── */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--card); border-bottom: 1px solid var(--border);
+  height: var(--nav-h); display: flex; align-items: center;
+  padding: 0 16px; gap: 6px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.nav-scroll { display: flex; gap: 4px; overflow-x: auto; flex: 1;
+  scrollbar-width: none; -ms-overflow-style: none; padding: 4px 0; }
+.nav-scroll::-webkit-scrollbar { display: none; }
+.nav-link {
+  flex-shrink: 0; padding: 5px 12px; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+  color: var(--text2); transition: all 0.2s; border: 1px solid transparent;
+  user-select: none;
+}
+.nav-link:hover { background: var(--bg2); color: var(--text); }
+.nav-link.active { background: var(--text); color: var(--bg); }
+.theme-btn {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--bg2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; transition: background 0.2s;
+}
+
+/* ── Sections ── */
+.section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+.section:last-child { border-bottom: none; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+.section-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px; }
+.section-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem,4vw,1.75rem); line-height: 1.2; margin-bottom: 4px; }
+.section-subtitle { font-size: 0.82rem; color: var(--text2); }
+
+/* ── Hero ── */
+.hero { padding: 56px 0 40px; }
+.hero-kicker { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); margin-bottom: 10px; }
+.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3rem); line-height: 1.1; margin-bottom: 16px; }
+.hero-sub { font-size: 0.92rem; color: var(--text2); max-width: 600px; line-height: 1.7; margin-bottom: 24px; }
+.city-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.city-pill { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; color: white; }
+.city-pill.dm  { background: var(--dm); }
+.city-pill.clt { background: var(--clt); }
+.city-pill.ral { background: var(--ral); }
+.city-pill.gvl { background: var(--gvl); }
+.profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.profile-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.profile-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 4px; }
+.profile-value { font-size: 0.88rem; font-weight: 600; }
+.insight-box { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: var(--radius); padding: 14px 16px; font-size: 0.82rem; line-height: 1.65; color: var(--text2); }
+.insight-box strong { color: var(--teal); }
+
+/* ── Comparison Grid (replaces tables — mobile-first, no horizontal scroll) ── */
+.cmp { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+/* Desktop header row */
+.cmp-hdr {
+  display: none;
+  grid-template-columns: minmax(130px,190px) repeat(4,1fr);
+  background: var(--bg2); border-bottom: 2px solid var(--border);
+}
+.cmp-hdr-lbl { padding: 9px 12px; }
+.cmp-city { padding: 9px 12px; font-size: 0.72rem; font-weight: 700; text-align: center; color: white; }
+.cmp-city.dm  { background: var(--dm); }
+.cmp-city.clt { background: var(--clt); }
+.cmp-city.ral { background: var(--ral); }
+.cmp-city.gvl { background: var(--gvl); }
+/* Data rows */
+.cmp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+.cmp-row:last-child { border-bottom: none; }
+.cmp-row:nth-child(even) { background: var(--surface); }
+.cmp-lbl {
+  grid-column: 1 / -1;
+  padding: 8px 12px 4px;
+  font-size: 0.78rem; font-weight: 700; color: var(--text2);
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+}
+.cmp-val {
+  padding: 8px 12px;
+  font-size: 0.8rem; line-height: 1.4;
+  border-top: none; display: flex; flex-direction: column; gap: 2px;
+}
+.cmp-val:nth-child(odd) { border-right: 1px solid var(--border); }
+/* City name label (mobile only) */
+.mob-lbl {
+  font-size: 0.63rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.07em; margin-bottom: 2px; display: block;
+}
+.mob-lbl.dm-c  { color: var(--dm); }
+.mob-lbl.clt-c { color: var(--clt); }
+.mob-lbl.ral-c { color: var(--ral); }
+.mob-lbl.gvl-c { color: var(--gvl); }
+@media (min-width: 580px) {
+  .mob-lbl { display: none; }
+  .score-mob-lbl { display: none; }
+}
+
+/* Tablet & Desktop: switch to 5-column layout */
+@media (min-width: 580px) {
+  .cmp-hdr { display: grid; }
+  .cmp-row {
+    grid-template-columns: minmax(130px,190px) repeat(4,1fr);
+    grid-template-rows: auto;
+  }
+  .cmp-lbl { grid-column: 1; border-bottom: none; padding: 10px 12px; background: var(--bg2); display: flex; align-items: center; }
+  .cmp-val { padding: 10px 12px; border-left: 1px solid var(--border); text-align: center; align-items: center; }
+  .cmp-val:nth-child(odd) { border-right: none; }
+}
+
+/* ── Badges ── */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; line-height: 1.4; }
+.badge-win  { background: var(--win);  color: #15803d; }
+.badge-warn { background: var(--warn); color: #92400e; }
+.badge-red  { background: rgba(220,38,38,0.12); color: #b91c1c; }
+.badge-neu  { background: var(--bg2);  color: var(--text2); }
+
+/* ── Verdict blocks ── */
+.verdict-block { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 10px; margin-top: 12px; }
+.verdict-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
+
+/* ── Info cards ── */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; }
+.info-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.info-card-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+/* ── Tabs ── */
+.tab-group { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.tab-group::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0; padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border);
+  font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  background: var(--card); color: var(--text2); transition: all 0.2s; white-space: nowrap;
+}
+.tab-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Dots / city colors ── */
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dm  { color: var(--dm); }
+.clt { color: var(--clt); }
+.ral { color: var(--ral); }
+.gvl { color: var(--gvl); }
+.dot.dm  { background: var(--dm); }
+.dot.clt { background: var(--clt); }
+.dot.ral { background: var(--ral); }
+.dot.gvl { background: var(--gvl); }
+
+/* ── Scorecard ── */
+.scorecard { display: flex; flex-direction: column; gap: 2px; }
+.score-hdr {
+  display: none;
+  grid-template-columns: minmax(140px,200px) repeat(4,1fr);
+  background: var(--bg2); border-radius: var(--radius) var(--radius) 0 0;
+  border: 1px solid var(--border); border-bottom: 2px solid var(--border);
+}
+.score-hdr-city { padding: 10px 12px; font-size: 0.78rem; font-weight: 700; text-align: center; color: white; border-radius: 0; }
+.score-hdr-city.dm  { background: var(--dm); }
+.score-hdr-city.clt { background: var(--clt); }
+.score-hdr-city.ral { background: var(--ral); }
+.score-hdr-city.gvl { background: var(--gvl); }
+.score-hdr-lbl { padding: 10px 12px; }
+@media (min-width: 580px) { .score-hdr { display: grid; } }
+
+.score-row {
+  background: var(--card); border: 1px solid var(--border); border-top: none;
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto;
+}
+.score-row:first-child { border-top: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; }
+.score-row:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+.score-row:nth-child(even) { background: var(--surface); }
+.score-meta {
+  grid-column: 1 / -1; padding: 9px 12px 4px;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+}
+.score-label { font-size: 0.82rem; font-weight: 700; }
+.score-note  { font-size: 0.72rem; color: var(--text2); }
+.score-cell  { padding: 8px 12px; font-size: 0.82rem; }
+.score-cell:nth-child(odd) { border-right: 1px solid var(--border); }
+.score-stars { font-size: 0.82rem; line-height: 1.3; }
+.score-stars span { display: block; font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
+.score-mob-lbl {
+  font-size: 0.63rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.07em; margin-bottom: 2px; display: block;
+}
+.score-mob-lbl.dm-c  { color: var(--dm); }
+.score-mob-lbl.clt-c { color: var(--clt); }
+.score-mob-lbl.ral-c { color: var(--ral); }
+.score-mob-lbl.gvl-c { color: var(--gvl); }
+
+@media (min-width: 580px) {
+  .score-hdr { border-radius: var(--radius) var(--radius) 0 0; }
+  .score-row { grid-template-columns: minmax(140px,200px) repeat(4,1fr); grid-template-rows: auto; }
+  .score-row:first-child { border-top: none; border-radius: 0; }
+  .score-row:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+  .score-meta { grid-column: 1; border-bottom: none; background: var(--bg2); padding: 10px 12px; }
+  .score-cell { border-left: 1px solid var(--border); text-align: center; padding: 10px 12px; }
+  .score-cell:nth-child(odd) { border-right: none; }
+}
+
+/* ── Totals bar ── */
+.totals { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-top: 20px; }
+@media (min-width: 480px) { .totals { grid-template-columns: repeat(4,1fr); } }
+.total-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
+.total-city { font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
+.total-score { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; line-height: 1; }
+.total-bar { height: 6px; border-radius: 3px; margin: 8px 0 4px; }
+.total-rank { font-size: 0.72rem; color: var(--text2); }
+
+/* ── Utility ── */
+.mt-12 { margin-top: 12px; }
+.fade-in { opacity: 1; }
+.fade-in.visible { opacity: 1; }
+/* Severity badges */
+.sev-hi  { background: rgba(220,38,38,0.12); color: #b91c1c; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+.sev-med { background: rgba(202,138,4,0.13);  color: #92400e; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+.sev-lo  { background: rgba(22,163,74,0.13);  color: #15803d; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
+.risk-row { margin-bottom: 12px; }
+.risk-row-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.risk-row-hd strong { font-size: 0.82rem; }
+.risk-body { font-size: 0.79rem; color: var(--text2); line-height: 1.55; padding-left: 2px; }
+.risk-tip  { font-size: 0.77rem; color: var(--teal); font-weight: 600; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="sticky-nav" id="nav">
+  <div class="nav-scroll" id="nav-scroll">
+    <span class="nav-link active" onclick="scrollToSection('summary')">🗺️ Overview</span>
+    <span class="nav-link" onclick="scrollToSection('housing')">🏠 Housing</span>
+    <span class="nav-link" onclick="scrollToSection('jobs')">💼 Jobs</span>
+    <span class="nav-link" onclick="scrollToSection('taxes')">🧾 Taxes</span>
+    <span class="nav-link" onclick="scrollToSection('schools')">🎓 Schools</span>
+    <span class="nav-link" onclick="scrollToSection('diversity')">🌍 Diversity</span>
+    <span class="nav-link" onclick="scrollToSection('lifestyle')">🎭 Lifestyle</span>
+    <span class="nav-link" onclick="scrollToSection('health')">🏥 Health</span>
+    <span class="nav-link" onclick="scrollToSection('scorecard')">🏆 Score</span>
+  </div>
+  <button class="theme-btn" id="theme-btn" aria-label="Toggle dark mode">🌙</button>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="section hero" id="summary">
+<div class="wrap">
+  <div class="hero-kicker fade-in">2025–2026 Family Relocation Guide</div>
+  <h1 class="hero-title fade-in">Four Cities.<br>One Right Choice.</h1>
+  <p class="hero-sub fade-in">A data-driven comparison built for your family — a software engineer, a registered nurse, and two young kids weighing a move from Des Moines.</p>
+
+  <div class="city-pills fade-in">
+    <span style="background:#2563EB;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🔵 Des Moines, IA</span>
+    <span style="background:#16A34A;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🟢 Charlotte, NC</span>
+    <span style="background:#D4720F;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🟠 Raleigh, NC</span>
+    <span style="background:#7C3AED;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🟣 Greenville, SC</span>
+  </div>
+
+  <div class="profile-grid fade-in">
+    <div class="profile-card"><div class="profile-label">👨‍💻 Software Engineer</div><div class="profile-value">Full Stack · 10 yrs · ~$118K</div></div>
+    <div class="profile-card"><div class="profile-label">👩‍⚕️ Registered Nurse</div><div class="profile-value">Part-time now → Full-time after move</div></div>
+    <div class="profile-card"><div class="profile-label">👧 Children</div><div class="profile-value">Age 5 (K) · Age 2 (Daycare)</div></div>
+    <div class="profile-card"><div class="profile-label">🏠 Home Budget</div><div class="profile-value">$500–550K ideal · $650K max</div></div>
+    <div class="profile-card"><div class="profile-label">💰 Combined Income (est.)</div><div class="profile-value">$193K–$224K depending on city</div></div>
+  </div>
+
+  <div class="insight-box fade-in">
+    <strong>Quick verdict:</strong> Raleigh edges Charlotte as the top choice for this family — Research Triangle's tech scene gives the best SE salary prospects, Duke + UNC hospitals are nationally ranked, Wake County schools are excellent, and you get the same NC governor's reproductive rights protections as Charlotte. Charlotte remains a very close second with the superior airport and higher diversity. Greenville is the lifestyle dark horse — best climate, lowest cost of living, safest — but the restrictive SC healthcare laws create real career risk for your wife as an RN. Des Moines is home, and its best argument is the water quality crisis: Iowa ranks #2 nationally for rising cancer rates, tied to nitrate contamination that affects the metro's drinking water.
+  </div>
+</div>
+</section>
+
+<!-- ── HOUSING ── -->
+<section class="section" id="housing">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🏠</div>
+    <div>
+      <h2 class="section-title">Housing Market</h2>
+      <p class="section-subtitle">What your $500–550K ideal budget (max $650K) gets you in each market</p>
+    </div>
+  </div>
+
+  <div class="cmp fade-in">
+    <div class="cmp-hdr">
+      <div class="cmp-hdr-lbl"></div>
+      <div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div>
+      <div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div>
+      <div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div>
+      <div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">Metro Median Price (2026)</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">$287K</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$425K</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>$440K</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$350K</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">$500–550K gets you…</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>4–5 BR luxury new build in Ankeny/Waukee; 2,800+ sqft</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>3–4 BR in Fort Mill SC/Matthews; Ballantyne near $650K ceiling</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>4 BR in Apex/Cary/Holly Springs; strong school zones</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>4 BR upscale in Five Forks/Simpsonville; 2,600+ sqft</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">Best Suburbs (family-friendly)</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny, Waukee, Johnston</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fort Mill SC, Matthews, Weddington, Ballantyne</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Apex, Cary, Holly Springs, Wake Forest</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Five Forks, Simpsonville, Greer, Mauldin</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">Property Tax Rate</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">1.5–1.8% (~$8.6K/yr on $500K)</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~0.62% (~$3.3K/yr on $525K)</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~0.62% (~$3.3K/yr on $525K)</span></div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~0.50% (~$2.6K/yr on $525K)</span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">Market Trend (2025→2026)</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Stable, slight appreciation; buyer's market</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Steady 2–3% appreciation; balanced</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>NAR Top 10 "hotspot" 2026; 3–5% projected; balanced</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>3–4% appreciation; strong demand from CLT overflow</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">New Construction Availability</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">Abundant — Ankeny/Waukee actively building</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Good — Fort Mill/Weddington active</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Good — Apex/Holly Springs/Fuquay-Varina active</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Good — Five Forks growth corridor</div>
+    </div>
+    <div class="cmp-row">
+      <div class="cmp-lbl">Annual Property Tax on $525K</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">~$7,875–$9,450</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~$3,255–$3,640</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~$3,255–$3,640</span></div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~$2,625–$3,150</span></div>
+    </div>
+  </div>
+
+  <div class="insight-box mt-12 fade-in">
+    <strong>Housing bottom line:</strong> Des Moines is the undisputed best-value market — $500K buys a luxury home. But high property taxes (~1.6%) erode that advantage: you'll pay $5K–6K more per year in property taxes than in NC or SC. Raleigh and Charlotte offer nearly identical purchase-price ranges; Raleigh carries a slight new-construction advantage in fast-growing suburbs like Apex. Greenville offers the best combination of value + low tax outside of Des Moines.
+  </div>
+
+  <div class="verdict-block fade-in">
+    <div class="verdict-item"><strong class="dm">Des Moines</strong> Best sqft/$ — luxury home in budget. Property taxes offset the savings vs. NC/SC</div>
+    <div class="verdict-item"><strong class="clt">Charlotte</strong> Solid — $500K competitive for 3-4BR suburban. Fort Mill/Matthews strong value</div>
+    <div class="verdict-item"><strong class="ral">Raleigh</strong> Strong — Apex/Cary/Holly Springs excellent schools; NAR top 10 market for 2026</div>
+    <div class="verdict-item"><strong class="gvl">Greenville</strong> Best value in the South — $500K buys more than Charlotte/Raleigh; lowest taxes</div>
+  </div>
+</div>
+</section>
+
+<!-- ── JOBS ── -->
+<section class="section" id="jobs">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">💼</div>
+    <div>
+      <h2 class="section-title">Job Markets</h2>
+      <p class="section-subtitle">Software Engineer (10 yrs) + Registered Nurse full-time opportunities</p>
+    </div>
+  </div>
+
+  <div class="tab-group fade-in">
+    <button class="tab-btn active" onclick="switchTab('jobs','se')">👨‍💻 Software Engineer</button>
+    <button class="tab-btn" onclick="switchTab('jobs','rn')">👩‍⚕️ Registered Nurse</button>
+    <button class="tab-btn" onclick="switchTab('jobs','combined')">💰 Combined Income</button>
+  </div>
+
+  <div class="tab-panel active" id="jobs-se">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Avg SE Salary (10yr exp)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$113K–$127K</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$106K–$130K</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$119K–$140K (top range)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$90K–$115K</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Top Employers</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Principal Financial, Wellmark, EMC, John Deere, Wells Fargo</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Wells Fargo, Bank of America, AvidXchange, LendingTree, Credit Karma</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">IBM, Red Hat, Cisco, Epic Games, SAS Institute, Lenovo</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>BMW, Michelin, GE Vernova, Fluor, Sage Therapeutics</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Tech Industry</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Insurance/fintech, ag-tech, financial services</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fintech, banking tech, 21.3% job growth 2020–28</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">RTP: 300+ tech companies; biotech, software, open-source; 21.3% growth</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Industrial/manufacturing tech; smaller market</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Remote / Hybrid Culture</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Good — many insurance/fintech HQs</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — financial services hub</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Excellent — tech-forward culture; many hybrid-first employers</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — manufacturing dominant; less remote-friendly</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Insurance Industry Specifically</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">#1 — Principal, Wellmark, EMC all HQ'd here</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Good — Brighthouse Financial, Allstate regional hub</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Good — MetLife, Nationwide regional offices</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — not a major insurance hub</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Startup / Growth Ecosystem</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Small but growing fintech scene</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Growing — strong VC inflow, Charlotte startup corridor</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Best — RTP + NC State + Duke + UNC feed innovation pipeline; ~150 startups</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Small — nascent startup scene</div></div>
+    </div>
+    <div class="verdict-block mt-12 fade-in">
+      <div class="verdict-item"><strong class="dm">Des Moines</strong> Best city for insurance-specific SE roles. Narrower tech ecosystem but strong niche match for your current experience</div>
+      <div class="verdict-item"><strong class="clt">Charlotte</strong> Strong fintech/banking-tech hub; AvidXchange and LendingTree are modern tech employers; great for insurance-adjacent roles</div>
+      <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Best overall SE market — RTP has 300+ tech companies; IBM and Red Hat strong for open-source/enterprise; highest top-end salaries</div>
+      <div class="verdict-item"><strong class="gvl">Greenville</strong> Weakest SE market — manufacturing focus means fewer software roles; expect a pay cut of $5K–$25K vs. current</div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="jobs-rn">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Avg RN Salary (full-time)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$72K–$82K</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$75K–$87K</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$78K–$87K (avg ~$83K)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$70K–$82K</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Top Employers</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>UnityPoint Health, MercyOne, Iowa Methodist</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Atrium Health, Novant Health, Carolina Medical Center</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Health, UNC Health, WakeMed (all top-tier)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health, Bon Secours St. Francis</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Sign-On Bonuses</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Limited — $3K–$8K typical</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — up to $15K+ at Atrium/Novant</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Strong — up to $15K at Duke Health/UNC Health</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — up to $10K at Prisma</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Career Advancement (NP/Mgmt)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate — U of Iowa academic pathway</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Atrium research + clinical advancement</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Excellent — Duke + UNC offer best academic nursing pathways in region</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — fewer academic/research positions</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Nurse Practitioner Pathway</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>UI College of Nursing (Iowa City)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>UNCC, Queens University programs</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke, UNC Chapel Hill, NC State (top-ranked NP programs)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Clemson, SC programs — solid but fewer options</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Legal Risk for RN Career</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Moderate — 6-week ban creates OB care legal chilling effect</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Low — Gov. Stein's EO protects providers; 12-week limit</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Low — Same NC protections as Charlotte; Duke/UNC provide legal cover</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">High — 6-week ban + near-total ban push; providers fleeing SC</span></div></div>
+    </div>
+    <div class="verdict-block mt-12 fade-in">
+      <div class="verdict-item"><strong class="dm">Des Moines</strong> Adequate market but shrinking OB workforce; 57% of Iowa counties now lack OB services; legal chilling effect real</div>
+      <div class="verdict-item"><strong class="clt">Charlotte</strong> Excellent — Atrium is a top-10 national system; generous sign-on bonuses; strong career trajectory</div>
+      <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Best for nursing career — Duke + UNC = strongest academic nursing ecosystem in the region; NP pathway is exceptional</div>
+      <div class="verdict-item"><strong class="gvl">Greenville</strong> Good pay, solid Prisma system — but SC's legal environment is a genuine career risk for OB-adjacent nursing roles</div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="jobs-combined">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Estimated SE Salary</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$118K–$125K</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$115K–$130K</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$120K–$140K</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$95K–$115K</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Estimated RN Salary (full-time)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$75K–$82K</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$78K–$87K</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$78K–$87K</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$72K–$82K</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Combined Household Range</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$193K–$207K</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$193K–$217K</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$198K–$227K (highest ceiling)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$167K–$197K (lowest)</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Income After State Tax (est. on $200K)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~$192.4K (3.8% flat)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~$191.5K (4.25% flat)</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~$191.5K (4.25% flat)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">~$188K (6% top rate)</span></div></div>
+    </div>
+    <div class="insight-box mt-12 fade-in">
+      <strong>Income summary:</strong> Raleigh offers the highest earning ceiling — the RTP tech market can push SE compensation well above Des Moines or Charlotte, while RN salaries are comparable to Charlotte. Greenville has the biggest income penalty both from lower SE salaries and South Carolina's higher income tax rate.
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── TAXES ── -->
+<section class="section" id="taxes">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🧾</div>
+    <div>
+      <h2 class="section-title">Tax Burden</h2>
+      <p class="section-subtitle">Income tax + property tax on $525K home — total annual obligation</p>
+    </div>
+  </div>
+  <div class="cmp fade-in">
+    <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">State Income Tax</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">3.8% flat (Iowa 2025)</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>4.25% flat (→3.99% in 2026)</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>4.25% flat (→3.99% in 2026)</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">Progressive up to 6.0% top rate</span></div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Est. Income Tax on $200K HH</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">~$7,600</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~$8,500</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~$8,500</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">~$11,500–$12,000</span></div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Property Tax Rate</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">1.5–1.8%</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~0.62%</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~0.62%</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~0.50%</span></div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Est. Property Tax on $525K</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">~$8,663–$9,450/yr</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~$3,255–$3,640/yr</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~$3,255–$3,640/yr</span></div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~$2,625–$3,150/yr</span></div></div>
+    <div class="cmp-row"><div class="cmp-lbl">No State Income Tax on Retirement?</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>No — all income taxed</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Partial — military/some pensions exempt</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Partial — military/some pensions exempt</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Partial — SC has favorable retirement income deductions</div></div>
+    <div class="cmp-row"><div class="cmp-lbl"><strong>Total Annual Tax Burden</strong><br><span style="font-weight:400;font-size:0.75rem">(income + property on $525K)</span></div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">~$16,263–$17,050</span></div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~$11,755–$12,140</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~$11,755–$12,140</span></div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~$14,125–$15,150</div></div>
+  </div>
+  <div class="insight-box mt-12 fade-in">
+    <strong>Tax summary:</strong> Charlotte and Raleigh are identical on taxes — NC's flat 4.25% rate + low ~0.62% property tax makes them the best total tax deal. Des Moines has the lowest income tax rate but its property taxes are 3× higher, creating a $4K–$5K annual penalty. South Carolina's progressive income tax (up to 6%) means Greenville residents pay ~$3,000–$4,500 more per year than NC neighbors despite lower property taxes.
+  </div>
+  <div class="verdict-block fade-in">
+    <div class="verdict-item"><strong class="dm">Des Moines</strong> Best income tax rate (3.8%) but highest property tax — net total tax is highest of the four</div>
+    <div class="verdict-item"><strong class="clt">Charlotte</strong> 🏆 Tied for best total burden — flat NC rate + low property tax saves ~$4K–$5K/yr vs. Des Moines</div>
+    <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Identical to Charlotte — same NC state; same Wake County property rates</div>
+    <div class="verdict-item"><strong class="gvl">Greenville</strong> Low property tax but SC's progressive income tax adds ~$3K–$4K over NC at your income level</div>
+  </div>
+</div>
+</section>
+
+<!-- ── SCHOOLS ── -->
+<section class="section" id="schools">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🎓</div>
+    <div>
+      <h2 class="section-title">Schools & Childcare</h2>
+      <p class="section-subtitle">K–12 quality for your 5-year-old · Daycare cost for your 2-year-old</p>
+    </div>
+  </div>
+  <div class="tab-group fade-in">
+    <button class="tab-btn active" onclick="switchTab('schools','elem')">🏫 K–12 Schools</button>
+    <button class="tab-btn" onclick="switchTab('schools','daycare')">🍼 Daycare (Age 2)</button>
+  </div>
+
+  <div class="tab-panel active" id="schools-elem">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">State K–12 Ranking</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">Iowa: Top 3–5 nationally</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>NC: Mid-tier (~25th nationally)</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>NC: Mid-tier (~25th nationally)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>SC: ~35th nationally</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Math Proficiency (state avg)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">~70% proficient</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~50–51%</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~50–51%</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~45–47%</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Best Suburban Schools</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny (A+), Waukee (A+), Johnston (A)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Weddington (A+), Fort Mill (A+), Matthews (A)</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Apex (A+), Cary (A+), Holly Springs (A+) — Wake County top performers</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Five Forks (A), Simpsonville (A–), Mauldin (B+)</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Charter School Options</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Limited — Iowa has few charters</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>231 charter schools statewide; many excellent options</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>231 charter schools statewide; KIPP, NCVPS strong in Raleigh</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — SC charter growth underway</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">IB / STEM Programs</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Limited IB; Ankeny STEM strong</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Multiple IB programs; STEM academies in Mecklenburg</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">STEM magnet programs; proximity to NC State STEM pipeline; multiple IB options</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited IB; Clemson proximity helps STEM</div></div>
+    </div>
+    <div class="insight-box mt-12 fade-in">
+      <strong>School insight:</strong> Iowa leads the nation in raw academic outcomes — but your suburb choice matters everywhere. In Wake County (Raleigh), Apex and Cary schools perform comparably to Iowa's best suburbs in absolute test scores, despite lower state averages. Raleigh's academic culture benefits from the Research Triangle university environment and strong parental investment in education. For your 5-year-old entering kindergarten, any of these suburb choices will deliver strong schools.
+    </div>
+  </div>
+
+  <div class="tab-panel" id="schools-daycare">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Monthly Daycare Cost (Age 2)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$833–$1,000/mo</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-warn">$1,000–$1,200/mo</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">$1,000–$1,100/mo</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">$540–$700/mo</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Annual Daycare Cost</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~$10K–$12K</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-warn">~$12K–$14.4K</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~$12K–$13.2K</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~$6.5K–$8.4K</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Daycare Availability</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Good — less demand pressure than Southeast</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Moderate — waitlists common in top areas</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Moderate — high demand in Apex/Cary; plan ahead</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Good — less competitive than larger metros</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Annual Savings vs. Charlotte</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Save ~$2K–$4K/yr vs. CLT</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Baseline</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Save ~$0–$2K/yr vs. CLT</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Save ~$6K–$8K/yr vs. CLT</span></div></div>
+    </div>
+    <div class="insight-box mt-12 fade-in">
+      <strong>Greenville's hidden advantage:</strong> Greenville ranks #43 nationally for least expensive childcare. The $6K–$8K annual savings vs. Charlotte/Raleigh is real and sustained — over 3 years of daycare before kindergarten, that's $18K–$24K in savings. This meaningfully offsets Greenville's income disadvantage.
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── DIVERSITY ── -->
+<section class="section" id="diversity">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🌍</div>
+    <div>
+      <h2 class="section-title">Diversity &amp; Community</h2>
+      <p class="section-subtitle">Racial, ethnic, and cultural makeup of each metro area</p>
+    </div>
+  </div>
+  <div class="cmp fade-in">
+    <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">White</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~75%</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>38.7%</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~53%</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~66%</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Black / African American</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~11%</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">33.7%</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~29%</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~20.5%</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Hispanic / Latino</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~8%</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~17%</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~11%</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~7.2%</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Asian</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~3%</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~6.5%</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~7% (tech workers, university community)</span></div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~2.5%</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Foreign-Born Population</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~10%</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">17.4% — highly cosmopolitan</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~14% — international tech/university workers</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~8%</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">Diversity Score (est. /100)</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~55/100</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">91/100</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~78/100</span></div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~65/100</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">LGBTQ+ Community</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate — Iowa is generally accepting</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Charlotte has visible, active LGBTQ+ community</div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Strong — Raleigh ranks among most LGBTQ+-friendly SE cities; college-town culture</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — smaller community; conservative SC backdrop</div></div>
+    <div class="cmp-row"><div class="cmp-lbl">International Food / Culture</div>
+      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Growing but limited</div>
+      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Excellent — highly international restaurant/cultural scene</span></div>
+      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Very good — university + tech worker population drives diversity of food + culture</div>
+      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — improving rapidly with growth</div></div>
+  </div>
+  <div class="verdict-block mt-12 fade-in">
+    <div class="verdict-item"><strong class="dm">Des Moines</strong> Least diverse — 75% White; limited international community; growing but slowly</div>
+    <div class="verdict-item"><strong class="clt">Charlotte</strong> 🏆 Most diverse city in the South — truly multicultural; excellent for raising children in a diverse environment</div>
+    <div class="verdict-item"><strong class="ral">Raleigh</strong> Very diverse — Research Triangle's university + tech mix drives strong diversity; high Asian population; vibrant LGBTQ+ scene</div>
+    <div class="verdict-item"><strong class="gvl">Greenville</strong> Moderate and growing — less diverse than CLT/RAL but improving; still predominantly White</div>
+  </div>
+</div>
+</section>
+
+<!-- ── LIFESTYLE ── -->
+<section class="section" id="lifestyle">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🎭</div>
+    <div>
+      <h2 class="section-title">Lifestyle &amp; Livability</h2>
+      <p class="section-subtitle">Climate, safety, airport access, outdoor life, dining, and culture</p>
+    </div>
+  </div>
+  <div class="tab-group fade-in">
+    <button class="tab-btn active" onclick="switchTab('life','climate')">☀️ Climate</button>
+    <button class="tab-btn" onclick="switchTab('life','safety')">🛡️ Safety</button>
+    <button class="tab-btn" onclick="switchTab('life','airport')">✈️ Airport</button>
+    <button class="tab-btn" onclick="switchTab('life','outdoor')">🥾 Outdoors</button>
+    <button class="tab-btn" onclick="switchTab('life','dining')">🍽️ Dining</button>
+  </div>
+
+  <div class="tab-panel active" id="life-climate">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Winter (Dec–Feb avg)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Harsh — 24°F avg; snow & ice common</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Mild — 42°F avg; rare snow</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Mild — 40°F avg; rare snow (avg 3–4 in/yr)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Mildest — 44°F avg; minimal snow/ice</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Summer (Jun–Aug avg)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>84°F avg; humidity moderate</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>88°F avg; high humidity; heat index above 95°F common</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>88°F avg; similar to CLT; slightly less urban heat island</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">85°F avg; Blue Ridge moderates heat; best of SE</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Outdoor Activity Season</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~5–6 months (May–Oct)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~9–10 months</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~9–10 months (similar to CLT)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~10–11 months — most outdoor-friendly</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Severe Weather Risk</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Tornadoes, blizzards, ice storms</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Hurricanes (weakened), ice storms, occasional tornado</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Hurricanes (weakened), ice storms (more than CLT), occasional tornado</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Rare — Blue Ridge shields from most severe weather</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Sun Days / Year</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~201 days</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~213 days</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~213 days</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~218 days</span></div></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="life-safety">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Numbeo Crime Index (lower = safer)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~40–45</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-warn">49.17 — suburb selection critical</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~36–40 (safer than Charlotte)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">38.60 — safest overall</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Suburban Safety</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny, Waukee — very safe suburbs</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fort Mill SC, Weddington — very safe; inner Charlotte elevated</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Apex, Cary, Holly Springs — consistently among safest NC cities</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Five Forks, Simpsonville — among safest in SC</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Safest Suburbs for Families</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny (#1 safest Iowa city), Waukee</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fort Mill SC (top 3 SC cities), Matthews, Weddington</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Apex (#1 safest NC city 2024), Cary (#2), Holly Springs (#3)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Five Forks, Simpsonville, Mauldin</div></div>
+    </div>
+    <div class="insight-box mt-12 fade-in">
+      <strong>Safety insight:</strong> Apex, NC is ranked the #1 safest city in North Carolina and among the top 10 safest in the Southeast. If safety is a top priority, Raleigh's suburbs (particularly Apex and Cary) are exceptional. Greenville overall scores best, but Raleigh's specific target suburbs beat any other city on this list.
+    </div>
+  </div>
+
+  <div class="tab-panel" id="life-airport">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Primary Airport</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>DSM (Des Moines Intl)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">CLT (American Airlines #2 hub)</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>RDU (Raleigh-Durham Intl)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>GSP (Greenville-Spartanburg)</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Nonstop Destinations</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~30–40 cities</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">180+ nonstop destinations; direct to Europe</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~75 nonstop destinations; growing rapidly</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~25–35 nonstop (CLT 90 min drive)</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">International Options</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>None direct — connect via Chicago/Minneapolis</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">London, Frankfurt, Mexico City, Cancún, direct</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>London (British Airways), Reykjavik, Cancún; more routes added annually</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>None direct — use CLT or Charlotte</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Drive Time to Airport</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>15–25 min from suburbs</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>20–35 min from suburbs</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>20–30 min from Apex/Cary</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>20–30 min; CLT backup = 90 min</div></div>
+    </div>
+    <div class="verdict-block mt-12 fade-in">
+      <div class="verdict-item"><strong class="dm">Des Moines</strong> Limited regional airport — domestic flights often require a connection; biggest lifestyle constraint</div>
+      <div class="verdict-item"><strong class="clt">Charlotte</strong> 🏆 Best airport by far — American hub with global reach; key advantage for family travel and business</div>
+      <div class="verdict-item"><strong class="ral">Raleigh</strong> Good and growing — 75+ nonstops; London direct; significant upgrade vs. Des Moines; not quite CLT but functional</div>
+      <div class="verdict-item"><strong class="gvl">Greenville</strong> Limited but CLT is 90 min away — manageable for major travel but adds friction vs. CLT/RDU cities</div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="life-outdoor">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Terrain / Geography</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Flat plains; river trails</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Piedmont; lakes; rolling hills</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Piedmont; forests; lakes; rivers</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Blue Ridge foothills; waterfalls; rivers</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Mountains</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>None</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Blue Ridge 2 hrs away</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Blue Ridge 2.5 hrs away</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Blue Ridge 45 min — weekend hiking easily accessible</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Beach Access</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>None</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Myrtle Beach 3 hrs; Outer Banks 5 hrs</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Outer Banks 2.5 hrs; Wrightsville Beach 2.5 hrs — best beach access</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Myrtle Beach 3 hrs; Hilton Head 2.5 hrs</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Highlights</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Gray's Lake, Raccoon River Valley Trail, High Trestle Trail</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Lake Norman, U.S. National Whitewater Center, McDowell Nature Preserve</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Falls Lake, Jordan Lake, Umstead State Park, American Tobacco Trail</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Paris Mountain, Falls Park, Swamp Rabbit Trail, Table Rock 1 hr</span></div></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="life-dining">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Food Scene Quality</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Growing — Ingersoll Ave, East Village neighborhoods emerging</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Excellent — SouthEnd, Plaza Midwood, NoDa; national-caliber restaurants</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Excellent — Downtown Raleigh, North Hills; James Beard nominees</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Nationally recognized for its size — Main St. scene is world-class per-capita</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Pro Sports</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Minor leagues only — Iowa Cubs (AAA), Iowa Wild (AHL)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Panthers (NFL), Hornets (NBA), Charlotte FC (MLS)</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Hurricanes (NHL) — strong fanbase; no NFL/NBA locally</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>No major pro teams; Swamp Rabbits (ECHL hockey)</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Arts / Culture / Music</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Des Moines Art Center; symphony; Iowa State Fair</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Spectrum Center (concerts), Blumenthal PAC, 2+ professional orchestras</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">DPAC (Duke Energy PAC, nationally ranked), NC Museum of Art, NC Symphony, vibrant live music</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Peace Center (excellent for size), growing arts scene, Artisphere festival</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">University Culture</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Drake University; Iowa State nearby (45 min)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>UNCC nearby; smaller college-town feel</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">NC State (in city), Duke 30 min, UNC 30 min — major university energy throughout</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Clemson 30 min; Furman University in city</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── HEALTH ── -->
+<section class="section" id="health">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🏥</div>
+    <div>
+      <h2 class="section-title">Health, Environment &amp; Policy</h2>
+      <p class="section-subtitle">Environmental risks · Air &amp; water quality · Healthcare policy affecting your family and your wife's nursing career</p>
+    </div>
+  </div>
+  <div class="tab-group fade-in">
+    <button class="tab-btn active" onclick="switchTab('health','env')">☣️ Environment</button>
+    <button class="tab-btn" onclick="switchTab('health','air')">💨 Air</button>
+    <button class="tab-btn" onclick="switchTab('health','water')">💧 Water</button>
+    <button class="tab-btn" onclick="switchTab('health','policy')">⚖️ Policy</button>
+    <button class="tab-btn" onclick="switchTab('health','hospitals')">🏨 Hospitals</button>
+  </div>
+
+  <div class="tab-panel active" id="health-env">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;font-size:0.8rem;color:var(--text2);line-height:1.6;">
+      <strong style="color:var(--text)">⚠️ Context:</strong> All four cities are livable and safe for families. These are documented public health concerns from government agencies and peer-reviewed research — presented to inform, not alarm. Most have simple mitigation steps.
+    </div>
+    <div class="info-grid fade-in">
+      <div class="info-card" style="border-top:3px solid var(--dm)">
+        <div class="info-card-title"><span class="dot dm"></span> Des Moines</div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-hi">🔴 HIGH</span><strong>Nitrate in Drinking Water</strong></div>
+        <p class="risk-body">Iowa ranks <strong>#2 nationally for cancer rate</strong> and is one of two states with rising rates. Des Moines metro tap water exceeds 5 mg/L about 40% of the time. Research links chronic nitrate exposure at even 3 mg/L to colorectal cancer, bladder cancer, and thyroid dysfunction. A 2024 University of Iowa study found 73% higher cancer mortality risk in people with detectable nitrate in drinking water.</p>
+        <p class="risk-tip">✔ Fix: Reverse osmosis under-sink filter (~$200–400) removes nitrates. Simple and effective.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>PFAS Contamination</strong></div>
+        <p class="risk-body">PFAS detected in multiple Iowa water systems. Iowa's regulatory response is slower than new EPA guidance. Linked to thyroid disease, liver damage, immune dysfunction, some cancers.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Algal Bloom Toxins (Microcystin)</strong></div>
+        <p class="risk-body">13 of 16 monitored Iowa lakes have issued microcystin advisories in the past 20 years. Dangerous for children and pets. Iowa has no enforceable drinking or recreational water standard.</p></div>
+      </div>
+      <div class="info-card" style="border-top:3px solid var(--clt)">
+        <div class="info-card-title"><span class="dot clt"></span> Charlotte</div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-hi">🔴 HIGH</span><strong>Air Quality — Ozone &amp; PM2.5</strong></div>
+        <p class="risk-body">Charlotte earned a <strong>D for ozone</strong> and <strong>C for particle pollution</strong> in the 2025 ALA "State of the Air" report — both failing grades. Ranks <strong>79th worst nationally</strong> for ozone. Particularly concerning for children whose lungs develop until ~age 8.</p>
+        <p class="risk-tip">✔ Fix: Monitor AQI daily (AirNow app); HEPA purifiers indoors; limit outdoor exertion on Orange/Red days.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Urban Heat Island</strong></div>
+        <p class="risk-body">Rapid urbanization creates 5–10°F hotter temps in urban areas vs. suburbs in summer, compounding air quality days. Avg summer highs 90–93°F.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-lo">🟢 LOW</span><strong>Drinking Water</strong></div>
+        <p class="risk-body">Charlotte Water sources from Lake Norman and Mountain Island Lake — well-protected watersheds meeting all EPA standards. No documented nitrate or cancer-linked contamination.</p></div>
+      </div>
+      <div class="info-card" style="border-top:3px solid var(--ral)">
+        <div class="info-card-title"><span class="dot ral"></span> Raleigh</div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Air Quality — Particle Pollution</strong></div>
+        <p class="risk-body">Raleigh-Durham receives a <strong>C for particle pollution</strong> in the 2025 ALA "State of the Air" report. Ozone grades are better than Charlotte. Less urban heat island than Charlotte. Still a concern for sensitive groups and young children.</p>
+        <p class="risk-tip">✔ Fix: Same as Charlotte — AQI monitoring app; HEPA purifier; limit outdoor exertion on elevated days.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-lo">🟢 LOW</span><strong>Drinking Water</strong></div>
+        <p class="risk-body">Raleigh sources water from Falls Lake and Jordan Lake — protected reservoirs with minimal agricultural pressure. Generally clean water with no major contamination issues documented.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Pollen (Seasonal Allergies)</strong></div>
+        <p class="risk-body">The NC Piedmont region has high tree/grass pollen. Research Triangle ranks among harder allergy cities in the Southeast. Long growing season (9–10 months) means extended exposure windows.</p></div>
+      </div>
+      <div class="info-card" style="border-top:3px solid var(--gvl)">
+        <div class="info-card-title"><span class="dot gvl"></span> Greenville</div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Water Disinfection Byproducts</strong></div>
+        <p class="risk-body">Greenville water meets all EPA standards but treatment produces HAA5 (haloacetic acids) at <strong>108× the EWG recommended limit</strong> (within EPA legal bounds). Chromium-6 is 2.6× above EWG threshold. Long-term concern; not an acute emergency.</p>
+        <p class="risk-tip">✔ Fix: Activated carbon filter (Brita, under-sink) significantly reduces HAAs and chromium-6.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-hi">🔴 HIGH</span><strong>Pollen — Extreme Allergy Burden</strong></div>
+        <p class="risk-body">Greenville regularly ranks among the worst US cities for allergy sufferers. The 10–11-month growing season means extended high-pollen exposure. Relevant especially for children prone to respiratory allergies.</p></div>
+        <div class="risk-row"><div class="risk-row-hd"><span class="sev-lo">🟢 LOW</span><strong>Air Quality (Best of 4)</strong></div>
+        <p class="risk-body">SC earns mostly A's and B's statewide in the 2025 ALA report. Blue Ridge geography provides natural air circulation. Cleanest air of the four cities for general respiratory health.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="health-air">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">2025 ALA Ozone (Smog) Grade</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">B — Pass</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">D — Fail</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">C — Marginal</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">A–B — Pass</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">2025 ALA Particle Pollution Grade</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">B–C</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">C — Fail</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">C — Fail</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Pass — Good</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">National Ozone Ranking</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Not in worst 100</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">79th worst nationally</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~120th (worse than average, better than CLT)</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Not ranked — good air</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Child Lung Development Risk</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Low</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">Elevated — ozone exposure during lung development ages</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">Moderate — monitor on bad days</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Low — cleanest air</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Asthma Trigger Risk</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Low-Moderate (cold air + particulates in winter)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">High — ozone + heat + humidity = prime asthma conditions</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Moderate — pollen + occasional ozone</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — primarily pollen-driven</div></div>
+    </div>
+    <div class="insight-box mt-12 fade-in">
+      <strong>Air quality summary:</strong> Greenville is the clear winner; Des Moines is second-best. Charlotte has the worst air quality — a D for ozone is a legitimate health concern for children ages 5 and under whose lungs are still developing. Raleigh is meaningfully better than Charlotte on ozone but still gets a C for particle pollution. If respiratory health is a priority, weight this heavily toward Greenville or Des Moines.
+    </div>
+  </div>
+
+  <div class="tab-panel" id="health-water">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Primary Water Source</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Raccoon &amp; Des Moines Rivers (heavy ag runoff)</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Lake Norman + Mountain Island Lake</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Falls Lake + Jordan Lake (protected reservoirs)</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">North Saluda Reservoir (minimal ag activity)</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Nitrate Contamination</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-red">5–8 mg/L chronic; cancer-rate link documented</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Low — no significant concern</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Low — protected source waters</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Low</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Disinfection Byproducts (HAA5)</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate concern</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Low</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Low</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">108× EWG limit (within EPA legal bounds)</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Overall Water Safety</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Moderate risk — reverse osmosis recommended</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Good</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Good</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Good with carbon filter</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Recommended Home Filter</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><strong>Reverse osmosis</strong> — essential for nitrate removal (~$300)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Standard carbon filter sufficient</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Standard carbon filter sufficient</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Activated carbon filter reduces HAAs (~$30–50)</div></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="health-policy">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;font-size:0.8rem;color:var(--text2);line-height:1.6;">
+      <strong style="color:var(--text)">📌 Note:</strong> Enacted laws and documented trends as of early 2026. Particularly relevant for your wife's nursing career in women's health settings.
+    </div>
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Iowa</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">N. Carolina</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">N. Carolina</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">S. Carolina</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Current Abortion Law</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>6-week ban in effect since July 2024</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>12-week ban since July 2023; 72-hr wait</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>12-week ban since July 2023; Gov. Stein EO protects providers</div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">6-week ban upheld unanimously by SC Supreme Court (May 2025)</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Proposed Legislation</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Fetal personhood bills; medication abortion mail restrictions</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Gov. Stein EO (Jan 2025) actively shields providers and patients</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Same NC protections — Gov. Stein EO protects all NC providers equally</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">SB 323 near-total ban proposed; would criminalize providers up to 30 yrs</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">RN Career Legal Risk</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Moderate — vague law creating OB care chilling effect; some doctors investigated</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Low — Governor's EO + Atrium/Novant provide legal clarity</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Low — same NC protections; Duke/UNC provide additional legal cover as academic systems</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">High — SC provider exodus underway; 8,000+ residents traveled out-of-state for care in 2024</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">OB-GYN Workforce Trend</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Shrinking — 57% of Iowa counties lack OB services (2024)</span></div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Atrium and Novant maintain robust OB</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Strong + growing — Duke/UNC OB residency programs attract top talent</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">Declining — doctors actively leaving SC due to legal climate</span></div></div>
+      <div class="cmp-row"><div class="cmp-lbl">IVF Access</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>At-risk — fetal personhood bills stalled but could return</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">No current restrictions or pending threats</span></div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">No current restrictions or pending threats</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>SB 323 sponsor says IVF exempt but criminal penalties could chill providers</div></div>
+    </div>
+    <div class="insight-box mt-12 fade-in">
+      <strong>Critical for your wife's nursing career:</strong> Both Raleigh and Charlotte benefit from NC Governor Stein's protective Executive Order — the most provider-friendly stance of any state on this list. South Carolina is the most restrictive, with documented cases of doctors facing legal scrutiny for routine miscarriage/ectopic care. An OB-adjacent RN in SC faces real career and legal risk. Des Moines is restrictive and tightening. For your wife's long-term career, NC (either city) is the clear safer choice.
+    </div>
+  </div>
+
+  <div class="tab-panel" id="health-hospitals">
+    <div class="cmp fade-in">
+      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Top Hospital Systems</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>UnityPoint Health, MercyOne Iowa Methodist</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Atrium Health (Top 10 national), Novant Health</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Health (top-5 national), UNC Health (top-15 national), WakeMed</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health, Bon Secours St. Francis</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Pediatric Specialty Care</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Stead Family Children's (U of Iowa — 1.5 hrs Iowa City)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Levine Children's Hospital — U.S. News nationally ranked</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Children's (top-5 nationally), UNC Children's — best academic pediatric care in SE</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health Children's — solid regional, not nationally ranked</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Cancer Center</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Iowa Oncology, MercyOne Cancer Center</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Atrium Levine Cancer Institute</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Cancer Institute (NCI-designated) — nationally ranked</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health Cancer Institute — regional</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">Academic Medical Research</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate — Iowa City is 1.5 hrs for University of Iowa research</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Atrium expanding research partnerships with UNCC</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Best — Duke and UNC are consistently top-10 medical research universities nationally</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — Prisma research growing but not academically anchored</div></div>
+      <div class="cmp-row"><div class="cmp-lbl">NP / Advanced Nursing Education</div>
+        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>U of Iowa College of Nursing (Iowa City)</div>
+        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>UNCC, Queens University programs</div>
+        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke School of Nursing (top-5 NP program), UNC Chapel Hill (top-10) — exceptional</span></div>
+        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Clemson, SC programs — solid regionals</div></div>
+    </div>
+    <div class="verdict-block mt-12 fade-in">
+      <div class="verdict-item"><strong class="dm">Des Moines</strong> Adequate routine care; Iowa City academic center is excellent but 1.5 hrs away; OB access declining statewide</div>
+      <div class="verdict-item"><strong class="clt">Charlotte</strong> Excellent — Atrium is top-10 nationally; Levine Children's is nationally ranked for your kids</div>
+      <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Best hospital infrastructure — Duke + UNC = top academic medical combo in the SE; Duke Cancer Institute NCI-designated; best NP pathway for your wife</div>
+      <div class="verdict-item"><strong class="gvl">Greenville</strong> Good regional care via Prisma; shorter wait times; limited mental health resources and weakening OB access</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ── SCORECARD ── -->
+<section class="section" id="scorecard">
+<div class="wrap">
+  <div class="section-header fade-in">
+    <div class="section-icon">🏆</div>
+    <div>
+      <h2 class="section-title">Final Scorecard</h2>
+      <p class="section-subtitle">13 KPIs rated 1–5, weighted for your family's specific profile</p>
+    </div>
+  </div>
+
+  <div class="scorecard fade-in">
+    <div class="score-hdr">
+      <div class="score-hdr-lbl"></div>
+      <div class="score-hdr-city" style="background:#2563EB;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Des Moines</div>
+      <div class="score-hdr-city" style="background:#16A34A;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Charlotte</div>
+      <div class="score-hdr-city" style="background:#D4720F;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Raleigh</div>
+      <div class="score-hdr-city" style="background:#7C3AED;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Greenville</div>
+    </div>
+
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🏠 Housing Value</div><div class="score-note">What $500–650K gets you</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Best $/sqft</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐<span>Competitive</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>Good, not cheap</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐<span>Great SE value</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">👨‍💻 SE Job Market</div><div class="score-note">Full Stack, 10yrs, insurance background</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>Good niche fit</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>Fintech hub</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐⭐<span>RTP — best ceiling</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>Limited tech roles</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">👩‍⚕️ RN Job Market</div><div class="score-note">Full-time nursing, career growth, legal safety</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>Shrinking OB access</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>Atrium hub</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Duke + UNC = best</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>Legal career risk</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🧾 Income Tax Rate</div><div class="score-note">State income tax on ~$200K HH</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐⭐<span>3.8% flat — best</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>4.25% flat</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>4.25% flat</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>Up to 6.0%</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🏘️ Property Tax</div><div class="score-note">Annual tax on $525K home</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>~$8.7K/yr</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>~$3.4K/yr</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>~$3.4K/yr</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>~$2.8K/yr</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🎓 School Quality</div><div class="score-note">K–12 suburban school ratings</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Iowa top 3–5 nationally</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐<span>Suburb-dependent</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>Apex/Cary A+ rated</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐<span>B+/A in suburbs</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🍼 Daycare Cost</div><div class="score-note">Monthly cost for 2-year-old</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>~$900/mo</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐<span>~$1,100/mo</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐<span>~$1,050/mo</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>~$620/mo — lowest</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🌍 Diversity</div><div class="score-note">Ethnic, cultural, international mix</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>~55/100 score</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐⭐<span>91/100 — best</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>~78/100 — very good</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐<span>~65/100 — moderate</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">🛡️ Safety</div><div class="score-note">Crime index (lower = safer)</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>Index ~42</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐<span>Index ~49 (suburb varies)</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>Apex #1 safest NC city</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Index ~38 — safest</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">💨 Air Quality</div><div class="score-note">2025 ALA State of the Air grades</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐<span>B grades overall</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐<span>D ozone — concerning</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>C particle — moderate</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>A–B — cleanest</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">💧 Water Quality</div><div class="score-note">Source water safety, contamination risk</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>Nitrate cancer link</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>Good — clean source</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Best — protected reservoirs</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐<span>Good (with filter)</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">☀️ Climate &amp; Livability</div><div class="score-note">Year-round outdoor quality of life</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>Harsh winters</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐<span>9–10 mo outdoor</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>9–10 mo outdoor</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>10–11 mo — best</span></div></div>
+    </div>
+    <div class="score-row">
+      <div class="score-meta"><div class="score-label">✈️ Airport &amp; Travel</div><div class="score-note">Nonstop destinations, travel friction</div></div>
+      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>~35 nonstops</span></div></div>
+      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐⭐<span>180+ nonstops — hub</span></div></div>
+      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>75+ nonstops; growing</span></div></div>
+      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>~30 nonstops</span></div></div>
+    </div>
+  </div>
+
+  <!-- Totals -->
+  <div class="totals fade-in" style="margin-top:20px">
+    <div class="total-card">
+      <div class="total-city" style="color:var(--dm)">🔵 Des Moines</div>
+      <div class="total-score" style="color:var(--dm)">41</div>
+      <div class="total-bar" style="background:var(--dm);width:63%"></div>
+      <div class="total-rank">out of 65 · 🏅 4th place</div>
+    </div>
+    <div class="total-card">
+      <div class="total-city" style="color:var(--clt)">🟢 Charlotte</div>
+      <div class="total-score" style="color:var(--clt)">48</div>
+      <div class="total-bar" style="background:var(--clt);width:74%"></div>
+      <div class="total-rank">out of 65 · 🥈 2nd place</div>
+    </div>
+    <div class="total-card" style="border:2px solid var(--ral);position:relative">
+      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ral);color:white;font-size:0.68rem;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap">TOP PICK</div>
+      <div class="total-city" style="color:var(--ral)">🟠 Raleigh</div>
+      <div class="total-score" style="color:var(--ral)">51</div>
+      <div class="total-bar" style="background:var(--ral);width:78%"></div>
+      <div class="total-rank">out of 65 · 🥇 1st place</div>
+    </div>
+    <div class="total-card">
+      <div class="total-city" style="color:var(--gvl)">🟣 Greenville</div>
+      <div class="total-score" style="color:var(--gvl)">48</div>
+      <div class="total-bar" style="background:var(--gvl);width:74%"></div>
+      <div class="total-rank">out of 65 · 🥈 2nd (tied)</div>
+    </div>
+  </div>
+
+  <div class="insight-box mt-12 fade-in" style="border-left-color:var(--ral)">
+    <strong style="color:var(--ral)">Final recommendation:</strong><br><br>
+    🥇 <strong>Raleigh, NC</strong> — Research Triangle is the best SE job market for both roles. Duke + UNC = nationally ranked hospitals and the best NP pathway for your wife's career. Apex and Cary are among the safest cities in the country. Same NC Gov. Stein protections as Charlotte. <em>Targets: Apex, Cary, Holly Springs.</em><br><br>
+    🥈 <strong>Charlotte, NC</strong> — Very close second. Best airport of the four cities (critical for travel). Highest diversity score. Atrium Health is excellent. The D-grade air quality is the main differentiator vs. Raleigh. <em>Targets: Fort Mill SC, Matthews, Weddington.</em><br><br>
+    🥉 <strong>Greenville, SC</strong> — Best lifestyle and lowest cost of living. Cleanest air, safest city, $6K–$8K cheaper daycare. But SC's near-total abortion ban push creates real legal risk for your wife's nursing career — hard to recommend given that exposure. <em>Only if you monitor SC legislation closely.</em><br><br>
+    🏅 <strong>Des Moines, IA</strong> — Home has its advantages: best housing value, lowest income tax. But Iowa's documented #2 cancer rate tied to nitrate contamination, the harshest winters, the least diverse metro, and the weakest SE job market make it the least compelling destination move.
+  </div>
+</div>
+</section>
+
+<script>
+// ── Theme ──
+const btn = document.getElementById('theme-btn');
+const stored = localStorage.getItem('theme');
+if (stored === 'dark') { document.documentElement.setAttribute('data-theme','dark'); btn.textContent = '☀️'; }
+btn.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+  btn.textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('theme', isDark ? '' : 'dark');
+});
+
+// ── Tabs ──
+function switchTab(section, id) {
+  const sec = document.getElementById(section) || document.querySelector(`#${section}-${id}`)?.closest('section') || document.querySelector(`.section:has(#${section}-${id})`);
+  // Find all panels with this section prefix
+  document.querySelectorAll(`[id^="${section}-"]`).forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(`${section}-${id}`);
+  if (target) { target.classList.add('active'); }
+  // Update tab buttons
+  const tabGroup = target?.closest('section')?.querySelector('.tab-group') || target?.parentElement?.previousElementSibling;
+  if (tabGroup) {
+    tabGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const clickedBtns = Array.from(document.querySelectorAll('.tab-btn')).filter(b => b.onclick?.toString().includes(`'${id}'`));
+    clickedBtns.forEach(b => b.classList.add('active'));
+  }
+}
+
+// ── Scroll nav ──
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) { const top = el.getBoundingClientRect().top + window.scrollY - 58; window.scrollTo({ top, behavior: 'smooth' }); }
+}
+
+// ── Active nav highlight ──
+const sections = ['summary','housing','jobs','taxes','schools','diversity','lifestyle','health','scorecard'];
+const navLinks = document.querySelectorAll('.nav-link');
+function updateNav() {
+  let current = 'summary';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 80) current = id;
+  });
+  navLinks.forEach(l => {
+    const fn = l.getAttribute('onclick') || '';
+    l.classList.toggle('active', fn.includes(`'${current}'`));
+  });
+  // Scroll active link into view in nav
+  const active = Array.from(navLinks).find(l => l.classList.contains('active'));
+  if (active) active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+
+// ── Fade-in observer ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.05 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
