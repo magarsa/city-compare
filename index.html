@@ -383,6 +383,7 @@ const CITIES = {
     housing:{ median:287000, taxRate:0.0165, bestSuburbs:'Ankeny, Waukee, Johnston', trend:'Stable, modest appreciation; buyer-friendly', valueBonus:1 },
     jobs:{
       se:  {mid:120000, range:'$113K–$127K', employers:'Principal Financial, Wellmark, EMC, John Deere', score:3},
+      sys: {mid:98000,  range:'$88K–$108K',  employers:'Principal Financial, EMC National Life, John Deere (IT infra), Wellmark', score:3},
       qa:  {mid:80000,  range:'$70K–$95K',   employers:'Principal Financial, Wellmark, Hy-Vee IT', score:3},
       da:  {mid:78000,  range:'$68K–$92K',   employers:'Principal Financial, EMC, Iowa Farm Bureau', score:3},
       it:  {mid:68000,  range:'$55K–$80K',   employers:'UnityPoint Health, Wellmark, Nationwide', score:3},
@@ -406,6 +407,7 @@ const CITIES = {
     housing:{ median:425000, taxRate:0.0062, bestSuburbs:'Fort Mill SC, Matthews, Weddington, Ballantyne', trend:'2–3% appreciation; balanced market', valueBonus:0 },
     jobs:{
       se:  {mid:118000, range:'$106K–$130K', employers:"Wells Fargo, Bank of America, AvidXchange, LendingTree, Credit Karma", score:4},
+      sys: {mid:103000, range:'$92K–$115K',  employers:"Duke Energy, Bank of America, Honeywell, Lowe's, SPX Technologies", score:4},
       qa:  {mid:90000,  range:'$80K–$102K',  employers:"Bank of America, Lowe's, Duke Energy, Honeywell", score:4},
       da:  {mid:88000,  range:'$78K–$98K',   employers:"Bank of America, Wells Fargo, Lowe's, Atrium Health", score:4},
       it:  {mid:75000,  range:'$62K–$88K',   employers:'Atrium Health, Novant Health, Wells Fargo, Deloitte', score:4},
@@ -429,6 +431,7 @@ const CITIES = {
     housing:{ median:440000, taxRate:0.0062, bestSuburbs:'Apex, Cary, Holly Springs, Wake Forest', trend:'NAR Top 10 hotspot 2026; 3–5% projected growth', valueBonus:0 },
     jobs:{
       se:  {mid:130000, range:'$119K–$140K', employers:'IBM, Red Hat, Cisco, Epic Games, SAS Institute, Lenovo', score:5},
+      sys: {mid:112000, range:'$100K–$125K', employers:'Cisco, IBM, Red Hat, Lenovo, NetApp, Palo Alto Networks', score:5},
       qa:  {mid:95000,  range:'$85K–$108K',  employers:'IBM, Cisco, Red Hat, Lenovo, Bandwidth, Pendo', score:5},
       da:  {mid:93000,  range:'$82K–$105K',  employers:'SAS Institute, IBM, Duke Health, UNC Health, Bandwidth', score:5},
       it:  {mid:82000,  range:'$68K–$95K',   employers:'Duke Health, UNC Health, WakeMed, IBM, Cisco, Deloitte', score:5},
@@ -452,6 +455,7 @@ const CITIES = {
     housing:{ median:350000, taxRate:0.0050, bestSuburbs:'Five Forks, Simpsonville, Greer, Mauldin', trend:'3–4% appreciation; Charlotte overflow demand', valueBonus:0.5 },
     jobs:{
       se:  {mid:102000, range:'$90K–$115K', employers:'BMW, Michelin, GE Vernova, Fluor, Sage Therapeutics', score:2},
+      sys: {mid:88000,  range:'$78K–$100K', employers:'BMW Manufacturing, Michelin, GE Vernova, Bosch, TD Bank', score:2},
       qa:  {mid:78000,  range:'$68K–$90K',  employers:'BMW, Michelin, GE Vernova, Bosch, Dräger', score:2},
       da:  {mid:75000,  range:'$65K–$88K',  employers:'Prisma Health, BMW, Michelin, TD Bank', score:2},
       it:  {mid:65000,  range:'$55K–$78K',  employers:'Prisma Health, Bon Secours, BMW, Michelin', score:2},
@@ -538,19 +542,33 @@ const CITIES = {
 };
 
 const ROLES = {
-  se: {label:'Software Engineer', icon:'👨‍💻'},
-  qa: {label:'QA Engineer', icon:'🔍'},
-  da: {label:'Data Analyst', icon:'📊'},
-  it: {label:'IT Support Specialist', icon:'🖥️'},
-  rn: {label:'Registered Nurse', icon:'👩‍⚕️'},
-  none:{label:'Not comparing / Other', icon:'—'},
+  se:  {label:'Software Engineer',    icon:'👨‍💻'},
+  sys: {label:'Systems Engineer',     icon:'🖧'},
+  qa:  {label:'QA Engineer',          icon:'🔍'},
+  da:  {label:'Data Analyst',         icon:'📊'},
+  it:  {label:'IT Support Specialist',icon:'🖥️'},
+  rn:  {label:'Registered Nurse',     icon:'👩‍⚕️'},
+  none:{label:'Not comparing / Other',icon:'—'},
 };
 
-const EXP_LEVELS = {
-  entry:  {label:'Entry',  note:'0–3 yrs', mult:0.82},
-  mid:    {label:'Mid',    note:'4–8 yrs', mult:1.0},
-  senior: {label:'Senior', note:'9+ yrs',  mult:1.22},
+// Role-specific experience levels
+// mult = multiplier applied to the city's base mid salary
+const EXP_LEVELS_DEFAULT = {
+  entry:  {label:'Entry',   note:'0–3 yrs', mult:0.82},
+  mid:    {label:'Mid',     note:'4–8 yrs', mult:1.0},
+  senior: {label:'Senior',  note:'9+ yrs',  mult:1.22},
 };
+
+// Nursing has a flatter pay curve and different career language
+const EXP_LEVELS_RN = {
+  entry:  {label:'New Grad',    note:'0–2 yrs', mult:0.88},
+  mid:    {label:'Experienced', note:'3–7 yrs', mult:1.0},
+  senior: {label:'Senior/Specialty', note:'8+ yrs / charge / specialty unit', mult:1.12},
+};
+
+function getExpLevels(role) {
+  return role === 'rn' ? EXP_LEVELS_RN : EXP_LEVELS_DEFAULT;
+}
 
 const PRIORITIES_DEF = [
   {key:'housing',     label:'🏠 Housing Value',      note:'What your budget buys you'},
@@ -682,7 +700,8 @@ function buildExpPills(person) {
   const refCity = CITIES['raleigh'];
   const jobData = refCity.jobs[role];
   if (!jobData) return;
-  el.innerHTML = Object.entries(EXP_LEVELS).map(([k,e]) => {
+  const expLevels = getExpLevels(role);
+  el.innerHTML = Object.entries(expLevels).map(([k,e]) => {
     const sal = jobData ? Math.round(jobData.mid * e.mult / 1000)*1000 : 0;
     return `<div class="exp-pill ${exp===k?'selected':''}" onclick="selectExp(${person},'${k}')">
       ${e.label}
@@ -763,7 +782,7 @@ function getJobData(city, role) {
 function calcSal(city, role, expKey) {
   const j = getJobData(city, role);
   if (!j) return 0;
-  return Math.round(j.mid * EXP_LEVELS[expKey].mult);
+  return Math.round(j.mid * getExpLevels(role)[expKey].mult);
 }
 
 function housingScore(city, budget) {
@@ -1016,7 +1035,7 @@ function renderJobs(cities) {
     panels += `<div class="tab-panel active" id="jobs-1">
       ${cmpGrid(cities, [
         {label:'Salary Range', fn: c => {const j=getJobData(c,S.role1); return j?j.range:'—'}},
-        {label:`Est. ${EXP_LEVELS[S.exp1].label}-Level Salary`, fn: c => {const s=calcSal(c,S.role1,S.exp1); return s?`<strong>~$${fmtNum(s)}</strong>`:'—'}},
+        {label:`Est. ${getExpLevels(S.role1)[S.exp1].label}-Level Salary`, fn: c => {const s=calcSal(c,S.role1,S.exp1); return s?`<strong>~$${fmtNum(s)}</strong>`:'—'}},
         {label:'Top Employers', fn: c => {const j=getJobData(c,S.role1); return j?j.employers:'—'}},
         {label:'Market Score', fn: c => {const j=getJobData(c,S.role1); return j?starStr(j.score):'—'}},
         ...(S.role1==='rn'?[{label:'Sign-On Bonus', fn: c => {const j=getJobData(c,S.role1); return j&&j.bonus?`<span class="badge win">${j.bonus}</span>`:'Standard'}}]:[]),
@@ -1030,7 +1049,7 @@ function renderJobs(cities) {
     panels += `<div class="tab-panel ${!hasJ1?'active':''}" id="jobs-2">
       ${cmpGrid(cities, [
         {label:'Salary Range', fn: c => {const j=getJobData(c,S.role2); return j?j.range:'—'}},
-        {label:`Est. ${EXP_LEVELS[S.exp2].label}-Level Salary`, fn: c => {const s=calcSal(c,S.role2,S.exp2); return s?`<strong>~$${fmtNum(s)}</strong>`:'—'}},
+        {label:`Est. ${getExpLevels(S.role2)[S.exp2].label}-Level Salary`, fn: c => {const s=calcSal(c,S.role2,S.exp2); return s?`<strong>~$${fmtNum(s)}</strong>`:'—'}},
         {label:'Top Employers', fn: c => {const j=getJobData(c,S.role2); return j?j.employers:'—'}},
         {label:'Market Score', fn: c => {const j=getJobData(c,S.role2); return j?starStr(j.score):'—'}},
         ...(S.role2==='rn'?[{label:'Sign-On Bonus', fn: c => {const j=getJobData(c,S.role2); return j&&j.bonus?`<span class="badge win">${j.bonus}</span>`:'Standard'}}]:[]),
@@ -1335,8 +1354,8 @@ function renderScorecard(cities, allScores, ranked) {
     <div class="insight" style="border-left-color:${CITIES[ranked[0].cityId].color}">
       <strong style="color:${CITIES[ranked[0].cityId].color}">Recommendation for your profile:</strong>
       Based on your ${fmtBudget(S.budget)} budget, 
-      ${S.role1!=='none'?ROLES[S.role1].label+' ('+EXP_LEVELS[S.exp1].label+')':''}
-      ${S.role2!=='none'?'+ '+ROLES[S.role2].label+' ('+EXP_LEVELS[S.exp2].label+')':''}
+      ${S.role1!=='none'?ROLES[S.role1].label+' ('+getExpLevels(S.role1)[S.exp1].label+')':''}
+      ${S.role2!=='none'?'+ '+ROLES[S.role2].label+' ('+getExpLevels(S.role2)[S.exp2].label+')':''}
       ${S.kids.length>0?', '+S.kids.length+' child'+(S.kids.length>1?'ren':''):''},
       and your priorities — <strong style="color:${CITIES[ranked[0].cityId].color}">${CITIES[ranked[0].cityId].name}, ${CITIES[ranked[0].cityId].state}</strong> scores highest.
       ${ranked.length>1?`<strong style="color:${CITIES[ranked[1].cityId].color}">${CITIES[ranked[1].cityId].name}</strong> is a close ${ranked[0].total-ranked[1].total<=5?'runner-up (within 5 points)':'second'}.`:''}
