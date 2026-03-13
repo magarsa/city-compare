@@ -2,1304 +2,1368 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>City Comparison — Des Moines · Charlotte · Raleigh · Greenville</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>City Relocation Comparison</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ── Base ── */
 :root {
-  --bg:     #f5f4f0;
-  --bg2:    #eeece8;
-  --card:   #ffffff;
-  --surface:#f9f8f6;
-  --text:   #1a1917;
-  --text2:  #5a5754;
-  --border: #dddad6;
-  --radius: 10px;
-  --dm:     #2563EB;  --dm-soft:  rgba(37,99,235,0.10);
-  --clt:    #16A34A;  --clt-soft: rgba(22,163,74,0.10);
-  --ral:    #D4720F;  --ral-soft: rgba(212,114,15,0.10);
-  --gvl:    #7C3AED;  --gvl-soft: rgba(124,58,237,0.10);
-  --teal:   #0D9488;
-  --win:    rgba(22,163,74,0.13);
-  --warn:   rgba(202,138,4,0.13);
-  --shadow: 0 2px 12px rgba(0,0,0,0.07);
-  --nav-h:  52px;
+  --bg:#f5f4f0; --bg2:#eeece8; --card:#ffffff; --surface:#f9f8f6;
+  --text:#1a1917; --text2:#5a5754; --border:#dddad6;
+  --radius:12px; --shadow:0 2px 12px rgba(0,0,0,0.07);
+  --accent:#D4720F;
 }
 [data-theme="dark"] {
-  --bg: #111110; --bg2: #1a1918; --card: #1f1e1c; --surface: #171614;
-  --text: #f0ede8; --text2: #9a9590; --border: #2e2c28;
-  --win: rgba(22,163,74,0.18); --warn: rgba(202,138,4,0.18);
+  --bg:#111110; --bg2:#1a1918; --card:#1f1e1c; --surface:#171614;
+  --text:#f0ede8; --text2:#9a9590; --border:#2e2c28;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
 
-/* ── Nav ── */
-.sticky-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--card); border-bottom: 1px solid var(--border);
-  height: var(--nav-h); display: flex; align-items: center;
-  padding: 0 16px; gap: 6px;
-  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
-}
-.nav-scroll { display: flex; gap: 4px; overflow-x: auto; flex: 1;
-  scrollbar-width: none; -ms-overflow-style: none; padding: 4px 0; }
-.nav-scroll::-webkit-scrollbar { display: none; }
-.nav-link {
-  flex-shrink: 0; padding: 5px 12px; border-radius: 20px;
-  font-size: 0.78rem; font-weight: 600; cursor: pointer; white-space: nowrap;
-  color: var(--text2); transition: all 0.2s; border: 1px solid transparent;
-  user-select: none;
-}
-.nav-link:hover { background: var(--bg2); color: var(--text); }
-.nav-link.active { background: var(--text); color: var(--bg); }
-.theme-btn {
-  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
-  border: 1px solid var(--border); background: var(--bg2);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  font-size: 15px; transition: background 0.2s;
-}
+/* ── App Shell ── */
+#app{min-height:100vh;}
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+.screen-header{padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.screen-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;line-height:1.1;}
+.screen-sub{font-size:0.8rem;color:var(--text2);margin-top:3px;}
+.screen-body{flex:1;overflow-y:auto;padding:20px;}
+.screen-footer{padding:16px 20px;border-top:1px solid var(--border);background:var(--card);flex-shrink:0;}
+.progress-dots{display:flex;gap:6px;align-items:center;}
+.dot-step{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s;}
+.dot-step.done{background:var(--accent);}
 
-/* ── Sections ── */
-.section { padding: 56px 0; border-bottom: 1px solid var(--border); }
-.section:last-child { border-bottom: none; }
-.wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
-.section-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px; }
-.section-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; margin-top: 2px; }
-.section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.3rem,4vw,1.75rem); line-height: 1.2; margin-bottom: 4px; }
-.section-subtitle { font-size: 0.82rem; color: var(--text2); }
+/* ── Buttons ── */
+.btn{width:100%;padding:14px;border-radius:var(--radius);border:none;font-family:'Outfit',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-primary{background:var(--text);color:var(--bg);}
+.btn-primary:hover{opacity:.88;}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);padding:10px;}
+.btn-ghost:hover{background:var(--bg2);}
+.btn-row{display:flex;gap:10px;}
+.btn-row .btn{flex:1;}
+.btn-sm{padding:7px 14px;font-size:0.78rem;border-radius:20px;font-weight:600;width:auto;}
 
-/* ── Hero ── */
-.hero { padding: 56px 0 40px; }
-.hero-kicker { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); margin-bottom: 10px; }
-.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3rem); line-height: 1.1; margin-bottom: 16px; }
-.hero-sub { font-size: 0.92rem; color: var(--text2); max-width: 600px; line-height: 1.7; margin-bottom: 24px; }
-.city-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-.city-pill { padding: 6px 16px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; color: white; }
-.city-pill.dm  { background: var(--dm); }
-.city-pill.clt { background: var(--clt); }
-.city-pill.ral { background: var(--ral); }
-.city-pill.gvl { background: var(--gvl); }
-.profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
-.profile-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
-.profile-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 4px; }
-.profile-value { font-size: 0.88rem; font-weight: 600; }
-.insight-box { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--teal); border-radius: var(--radius); padding: 14px 16px; font-size: 0.82rem; line-height: 1.65; color: var(--text2); }
-.insight-box strong { color: var(--teal); }
+/* ── Form Cards ── */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
+.form-card-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text2);margin-bottom:12px;}
+.form-label{font-size:0.82rem;font-weight:600;margin-bottom:6px;display:block;}
+.form-note{font-size:0.75rem;color:var(--text2);margin-top:4px;}
+.form-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9rem;background:var(--bg);color:var(--text);outline:none;}
+.form-input:focus{border-color:var(--accent);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a5754' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
 
-/* ── Comparison Grid (replaces tables — mobile-first, no horizontal scroll) ── */
-.cmp { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
-/* Desktop header row */
-.cmp-hdr {
-  display: none;
-  grid-template-columns: minmax(130px,190px) repeat(4,1fr);
-  background: var(--bg2); border-bottom: 2px solid var(--border);
-}
-.cmp-hdr-lbl { padding: 9px 12px; }
-.cmp-city { padding: 9px 12px; font-size: 0.72rem; font-weight: 700; text-align: center; color: white; }
-.cmp-city.dm  { background: var(--dm); }
-.cmp-city.clt { background: var(--clt); }
-.cmp-city.ral { background: var(--ral); }
-.cmp-city.gvl { background: var(--gvl); }
-/* Data rows */
-.cmp-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  border-bottom: 1px solid var(--border);
-  background: var(--card);
-}
-.cmp-row:last-child { border-bottom: none; }
-.cmp-row:nth-child(even) { background: var(--surface); }
-.cmp-lbl {
-  grid-column: 1 / -1;
-  padding: 8px 12px 4px;
-  font-size: 0.78rem; font-weight: 700; color: var(--text2);
-  background: var(--bg2); border-bottom: 1px solid var(--border);
-}
-.cmp-val {
-  padding: 8px 12px;
-  font-size: 0.8rem; line-height: 1.4;
-  border-top: none; display: flex; flex-direction: column; gap: 2px;
-}
-.cmp-val:nth-child(odd) { border-right: 1px solid var(--border); }
-/* City name label (mobile only) */
-.mob-lbl {
-  font-size: 0.63rem; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.07em; margin-bottom: 2px; display: block;
-}
-.mob-lbl.dm-c  { color: var(--dm); }
-.mob-lbl.clt-c { color: var(--clt); }
-.mob-lbl.ral-c { color: var(--ral); }
-.mob-lbl.gvl-c { color: var(--gvl); }
-@media (min-width: 580px) {
-  .mob-lbl { display: none; }
-  .score-mob-lbl { display: none; }
-}
+/* ── Counter buttons ── */
+.counter{display:flex;align-items:center;gap:10px;}
+.counter-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg2);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--text);line-height:1;}
+.counter-val{font-size:1.1rem;font-weight:700;min-width:24px;text-align:center;}
 
-/* Tablet & Desktop: switch to 5-column layout */
-@media (min-width: 580px) {
-  .cmp-hdr { display: grid; }
-  .cmp-row {
-    grid-template-columns: minmax(130px,190px) repeat(4,1fr);
-    grid-template-rows: auto;
-  }
-  .cmp-lbl { grid-column: 1; border-bottom: none; padding: 10px 12px; background: var(--bg2); display: flex; align-items: center; }
-  .cmp-val { padding: 10px 12px; border-left: 1px solid var(--border); text-align: center; align-items: center; }
-  .cmp-val:nth-child(odd) { border-right: none; }
+/* ── Kids list ── */
+.kids-list{display:flex;flex-direction:column;gap:8px;}
+.kid-row{display:flex;align-items:center;gap:10px;}
+.kid-row select{flex:1;}
+.kid-remove{background:none;border:none;color:var(--text2);font-size:1.1rem;cursor:pointer;padding:2px 6px;}
+
+/* ── Budget slider ── */
+.budget-display{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--accent);margin-bottom:8px;}
+.range-wrap{position:relative;}
+input[type=range]{width:100%;height:6px;-webkit-appearance:none;background:var(--border);border-radius:3px;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+.range-labels{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text2);margin-top:4px;}
+
+/* ── Job role cards ── */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.role-card{border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .15s;background:var(--bg);}
+.role-card.selected{border-color:var(--accent);background:rgba(212,114,15,.08);}
+.role-card-icon{font-size:1.3rem;margin-bottom:4px;}
+.role-card-name{font-size:0.8rem;font-weight:700;line-height:1.2;}
+.role-card-skip{grid-column:1/-1;text-align:center;font-size:0.78rem;color:var(--text2);padding:6px;cursor:pointer;border:1px dashed var(--border);border-radius:8px;}
+.role-card-skip.selected{border-color:var(--accent);color:var(--accent);}
+
+/* ── Experience pills ── */
+.exp-pills{display:flex;gap:6px;margin-top:8px;}
+.exp-pill{flex:1;padding:6px 4px;border-radius:20px;border:1px solid var(--border);background:var(--bg);font-size:0.72rem;font-weight:600;cursor:pointer;text-align:center;color:var(--text2);transition:all .15s;}
+.exp-pill.selected{background:var(--text);color:var(--bg);border-color:var(--text);}
+.exp-pill .sal{display:block;font-size:0.65rem;color:var(--text2);margin-top:1px;}
+.exp-pill.selected .sal{color:rgba(255,255,255,.6);}
+
+/* ── Priority sliders ── */
+.preset-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.preset-btn{flex:1;min-width:calc(50% - 3px);padding:8px 6px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);font-family:'Outfit',sans-serif;font-size:0.75rem;font-weight:700;cursor:pointer;text-align:center;color:var(--text2);transition:all .15s;}
+.preset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.pslider-row{margin-bottom:12px;}
+.pslider-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.pslider-lbl{font-size:0.82rem;font-weight:600;}
+.pslider-val{font-size:0.78rem;font-weight:700;color:var(--accent);}
+input.pslider{width:100%;height:4px;-webkit-appearance:none;background:var(--border);border-radius:2px;outline:none;}
+input.pslider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;}
+input.pslider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+
+/* ── City selector ── */
+.city-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.city-toggle{border:2px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;transition:all .15s;background:var(--card);position:relative;}
+.city-toggle.selected{border-width:2px;}
+.city-toggle-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:10px;}
+.city-toggle.selected .city-toggle-check{border-color:var(--citycolor);background:var(--citycolor);color:white;}
+.city-toggle-emoji{font-size:1.4rem;margin-bottom:4px;}
+.city-toggle-name{font-size:0.88rem;font-weight:700;line-height:1.2;}
+.city-toggle-sub{font-size:0.72rem;color:var(--text2);}
+.city-select-note{font-size:0.75rem;color:var(--text2);text-align:center;margin-bottom:12px;}
+.city-select-count{font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:8px;}
+
+/* ── Results Nav ── */
+.results-topbar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.results-topbar-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;}
+.topbar-btn{background:none;border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-family:'Outfit',sans-serif;font-size:0.75rem;font-weight:700;cursor:pointer;color:var(--text2);}
+.results-subnav{background:var(--card);border-bottom:1px solid var(--border);padding:0 12px;position:sticky;top:45px;z-index:49;overflow-x:auto;scrollbar-width:none;white-space:nowrap;}
+.results-subnav::-webkit-scrollbar{display:none;}
+.snav-link{display:inline-block;padding:8px 10px;font-size:0.75rem;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;}
+.snav-link.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── Results Section ── */
+.rsection{padding:32px 0;border-bottom:1px solid var(--border);}
+.rsection:last-child{border-bottom:none;}
+.rwrap{max-width:960px;margin:0 auto;padding:0 16px;}
+.rsec-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;}
+.rsec-icon{font-size:1.7rem;flex-shrink:0;}
+.rsec-title{font-family:'Playfair Display',serif;font-size:clamp(1.15rem,3.5vw,1.5rem);line-height:1.2;margin-bottom:2px;}
+.rsec-sub{font-size:0.78rem;color:var(--text2);}
+
+/* ── Comparison Grid ── */
+.cmp{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
+.cmp-hdr{display:none;}
+.cmp-data-row{border-bottom:1px solid var(--border);}
+.cmp-data-row:last-child{border-bottom:none;}
+.cmp-data-row:nth-child(even){background:var(--surface);}
+.cmp-row-lbl{padding:7px 12px 3px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);background:var(--bg2);border-bottom:1px solid var(--border);}
+.cmp-cell{padding:8px 12px;font-size:0.82rem;line-height:1.4;display:flex;gap:6px;align-items:flex-start;}
+.cell-citytag{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;min-width:66px;padding-top:2px;flex-shrink:0;}
+.cell-val{flex:1;}
+@media(min-width:580px){
+  .cmp-hdr{display:grid;border-bottom:2px solid var(--border);}
+  .cmp-hdr-lbl{background:var(--bg2);padding:9px 12px;}
+  .cmp-hdr-city{padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center;color:white;}
+  .cmp-data-row{display:grid;}
+  .cmp-row-lbl{background:var(--bg2);border-bottom:none;padding:10px 12px;display:flex;align-items:center;text-transform:none;letter-spacing:0;font-size:0.8rem;}
+  .cmp-cell{justify-content:center;text-align:center;flex-direction:column;align-items:center;border-left:1px solid var(--border);}
+  .cell-citytag{display:none;}
 }
 
 /* ── Badges ── */
-.badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; line-height: 1.4; }
-.badge-win  { background: var(--win);  color: #15803d; }
-.badge-warn { background: var(--warn); color: #92400e; }
-.badge-red  { background: rgba(220,38,38,0.12); color: #b91c1c; }
-.badge-neu  { background: var(--bg2);  color: var(--text2); }
+.badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:0.72rem;font-weight:700;line-height:1.4;}
+.win{background:rgba(22,163,74,.13);color:#15803d;}
+.warn{background:rgba(202,138,4,.13);color:#92400e;}
+.bad{background:rgba(220,38,38,.12);color:#b91c1c;}
+.neu{background:var(--bg2);color:var(--text2);}
+
+/* ── Insight box ── */
+.insight{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:12px 14px;font-size:0.82rem;line-height:1.65;color:var(--text2);margin-top:12px;}
+.insight strong{color:var(--accent);}
 
 /* ── Verdict blocks ── */
-.verdict-block { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 10px; margin-top: 12px; }
-.verdict-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; font-size: 0.8rem; color: var(--text2); line-height: 1.5; }
-
-/* ── Info cards ── */
-.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; }
-.info-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
-.info-card-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-
-/* ── Tabs ── */
-.tab-group { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
-.tab-group::-webkit-scrollbar { display: none; }
-.tab-btn {
-  flex-shrink: 0; padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border);
-  font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer;
-  background: var(--card); color: var(--text2); transition: all 0.2s; white-space: nowrap;
-}
-.tab-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* ── Dots / city colors ── */
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.dm  { color: var(--dm); }
-.clt { color: var(--clt); }
-.ral { color: var(--ral); }
-.gvl { color: var(--gvl); }
-.dot.dm  { background: var(--dm); }
-.dot.clt { background: var(--clt); }
-.dot.ral { background: var(--ral); }
-.dot.gvl { background: var(--gvl); }
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:10px;}
+.verdict-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;font-size:0.78rem;color:var(--text2);line-height:1.5;}
 
 /* ── Scorecard ── */
-.scorecard { display: flex; flex-direction: column; gap: 2px; }
-.score-hdr {
-  display: none;
-  grid-template-columns: minmax(140px,200px) repeat(4,1fr);
-  background: var(--bg2); border-radius: var(--radius) var(--radius) 0 0;
-  border: 1px solid var(--border); border-bottom: 2px solid var(--border);
-}
-.score-hdr-city { padding: 10px 12px; font-size: 0.78rem; font-weight: 700; text-align: center; color: white; border-radius: 0; }
-.score-hdr-city.dm  { background: var(--dm); }
-.score-hdr-city.clt { background: var(--clt); }
-.score-hdr-city.ral { background: var(--ral); }
-.score-hdr-city.gvl { background: var(--gvl); }
-.score-hdr-lbl { padding: 10px 12px; }
-@media (min-width: 580px) { .score-hdr { display: grid; } }
-
-.score-row {
-  background: var(--card); border: 1px solid var(--border); border-top: none;
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto;
-}
-.score-row:first-child { border-top: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; }
-.score-row:last-child { border-radius: 0 0 var(--radius) var(--radius); }
-.score-row:nth-child(even) { background: var(--surface); }
-.score-meta {
-  grid-column: 1 / -1; padding: 9px 12px 4px;
-  background: var(--bg2); border-bottom: 1px solid var(--border);
-}
-.score-label { font-size: 0.82rem; font-weight: 700; }
-.score-note  { font-size: 0.72rem; color: var(--text2); }
-.score-cell  { padding: 8px 12px; font-size: 0.82rem; }
-.score-cell:nth-child(odd) { border-right: 1px solid var(--border); }
-.score-stars { font-size: 0.82rem; line-height: 1.3; }
-.score-stars span { display: block; font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
-.score-mob-lbl {
-  font-size: 0.63rem; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.07em; margin-bottom: 2px; display: block;
-}
-.score-mob-lbl.dm-c  { color: var(--dm); }
-.score-mob-lbl.clt-c { color: var(--clt); }
-.score-mob-lbl.ral-c { color: var(--ral); }
-.score-mob-lbl.gvl-c { color: var(--gvl); }
-
-@media (min-width: 580px) {
-  .score-hdr { border-radius: var(--radius) var(--radius) 0 0; }
-  .score-row { grid-template-columns: minmax(140px,200px) repeat(4,1fr); grid-template-rows: auto; }
-  .score-row:first-child { border-top: none; border-radius: 0; }
-  .score-row:last-child { border-radius: 0 0 var(--radius) var(--radius); }
-  .score-meta { grid-column: 1; border-bottom: none; background: var(--bg2); padding: 10px 12px; }
-  .score-cell { border-left: 1px solid var(--border); text-align: center; padding: 10px 12px; }
-  .score-cell:nth-child(odd) { border-right: none; }
+.score-table{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.score-hdr-row{display:none;border-bottom:2px solid var(--border);}
+.score-data-row{border-bottom:1px solid var(--border);}
+.score-data-row:last-child{border-bottom:none;}
+.score-data-row:nth-child(even){background:var(--surface);}
+.score-meta{padding:7px 12px 3px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.score-meta-lbl{font-size:0.82rem;font-weight:700;}
+.score-meta-sub{font-size:0.7rem;color:var(--text2);}
+.score-cell-wrap{display:flex;flex-wrap:wrap;}
+.score-cell{padding:8px 12px;font-size:0.82rem;display:flex;gap:6px;align-items:center;}
+.score-city-tag{font-size:0.65rem;font-weight:800;min-width:66px;flex-shrink:0;}
+.score-stars{letter-spacing:1px;}
+.score-note{font-size:0.7rem;color:var(--text2);display:block;margin-top:1px;}
+@media(min-width:580px){
+  .score-hdr-row{display:grid;}
+  .score-data-row{display:grid;}
+  .score-meta{background:var(--bg2);border-bottom:none;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;}
+  .score-cell-wrap{display:contents;}
+  .score-cell{flex-direction:column;text-align:center;border-left:1px solid var(--border);justify-content:center;}
+  .score-city-tag{display:none;}
 }
 
-/* ── Totals bar ── */
-.totals { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-top: 20px; }
-@media (min-width: 480px) { .totals { grid-template-columns: repeat(4,1fr); } }
-.total-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; text-align: center; }
-.total-city { font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
-.total-score { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; line-height: 1; }
-.total-bar { height: 6px; border-radius: 3px; margin: 8px 0 4px; }
-.total-rank { font-size: 0.72rem; color: var(--text2); }
+/* ── Total cards ── */
+.totals-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+@media(min-width:480px){.totals-grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}}
+.total-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;position:relative;}
+.total-card.winner{border-width:2px;}
+.winner-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:0.65rem;font-weight:800;padding:2px 10px;border-radius:20px;color:white;white-space:nowrap;}
+.total-city-name{font-size:0.78rem;font-weight:700;margin-bottom:4px;}
+.total-score-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;line-height:1;}
+.total-bar-bg{height:5px;border-radius:3px;background:var(--bg2);margin:8px 0 4px;}
+.total-bar-fill{height:5px;border-radius:3px;}
+.total-rank{font-size:0.72rem;color:var(--text2);}
 
-/* ── Utility ── */
-.mt-12 { margin-top: 12px; }
-.fade-in { opacity: 1; }
-.fade-in.visible { opacity: 1; }
-/* Severity badges */
-.sev-hi  { background: rgba(220,38,38,0.12); color: #b91c1c; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
-.sev-med { background: rgba(202,138,4,0.13);  color: #92400e; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
-.sev-lo  { background: rgba(22,163,74,0.13);  color: #15803d; padding: 2px 8px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; white-space: nowrap; }
-.risk-row { margin-bottom: 12px; }
-.risk-row-hd { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
-.risk-row-hd strong { font-size: 0.82rem; }
-.risk-body { font-size: 0.79rem; color: var(--text2); line-height: 1.55; padding-left: 2px; }
-.risk-tip  { font-size: 0.77rem; color: var(--teal); font-weight: 600; margin-top: 4px; }
+/* ── Tabs (within results) ── */
+.tab-row{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.tab-row::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--card);font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--text2);transition:all .15s;}
+.tab-btn.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── Share toast ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 20px;border-radius:20px;font-size:0.82rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── Theme toggle ── */
+.theme-btn{background:none;border:1px solid var(--border);border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+
+/* ── Misc ── */
+.mt8{margin-top:8px;} .mt12{margin-top:12px;} .mt16{margin-top:16px;}
+.hidden{display:none!important;}
+.city-dm{color:#2563EB;} .city-clt{color:#16A34A;} .city-ral{color:#D4720F;} .city-gvl{color:#7C3AED;}
+.city-hun{color:#0891B2;} .city-moo{color:#0E7490;} .city-fml{color:#BE185D;} .city-con{color:#92400E;}
+.text2{color:var(--text2);}
+.divider{height:1px;background:var(--border);margin:14px 0;}
 </style>
 </head>
 <body>
-
-<!-- ── Nav ── -->
-<nav class="sticky-nav" id="nav">
-  <div class="nav-scroll" id="nav-scroll">
-    <span class="nav-link active" onclick="scrollToSection('summary')">🗺️ Overview</span>
-    <span class="nav-link" onclick="scrollToSection('housing')">🏠 Housing</span>
-    <span class="nav-link" onclick="scrollToSection('jobs')">💼 Jobs</span>
-    <span class="nav-link" onclick="scrollToSection('taxes')">🧾 Taxes</span>
-    <span class="nav-link" onclick="scrollToSection('schools')">🎓 Schools</span>
-    <span class="nav-link" onclick="scrollToSection('diversity')">🌍 Diversity</span>
-    <span class="nav-link" onclick="scrollToSection('lifestyle')">🎭 Lifestyle</span>
-    <span class="nav-link" onclick="scrollToSection('health')">🏥 Health</span>
-    <span class="nav-link" onclick="scrollToSection('scorecard')">🏆 Score</span>
-  </div>
-  <button class="theme-btn" id="theme-btn" aria-label="Toggle dark mode">🌙</button>
-</nav>
-
-<!-- ── Hero ── -->
-<section class="section hero" id="summary">
-<div class="wrap">
-  <div class="hero-kicker fade-in">2025–2026 Family Relocation Guide</div>
-  <h1 class="hero-title fade-in">Four Cities.<br>One Right Choice.</h1>
-  <p class="hero-sub fade-in">A data-driven comparison built for your family — a software engineer, a registered nurse, and two young kids weighing a move from Des Moines.</p>
-
-  <div class="city-pills fade-in">
-    <span style="background:#2563EB;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🔵 Des Moines, IA</span>
-    <span style="background:#16A34A;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🟢 Charlotte, NC</span>
-    <span style="background:#D4720F;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🟠 Raleigh, NC</span>
-    <span style="background:#7C3AED;color:#ffffff;padding:6px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;display:inline-block">🟣 Greenville, SC</span>
-  </div>
-
-  <div class="profile-grid fade-in">
-    <div class="profile-card"><div class="profile-label">👨‍💻 Software Engineer</div><div class="profile-value">Full Stack · 10 yrs · ~$118K</div></div>
-    <div class="profile-card"><div class="profile-label">👩‍⚕️ Registered Nurse</div><div class="profile-value">Part-time now → Full-time after move</div></div>
-    <div class="profile-card"><div class="profile-label">👧 Children</div><div class="profile-value">Age 5 (K) · Age 2 (Daycare)</div></div>
-    <div class="profile-card"><div class="profile-label">🏠 Home Budget</div><div class="profile-value">$500–550K ideal · $650K max</div></div>
-    <div class="profile-card"><div class="profile-label">💰 Combined Income (est.)</div><div class="profile-value">$193K–$224K depending on city</div></div>
-  </div>
-
-  <div class="insight-box fade-in">
-    <strong>Quick verdict:</strong> Raleigh edges Charlotte as the top choice for this family — Research Triangle's tech scene gives the best SE salary prospects, Duke + UNC hospitals are nationally ranked, Wake County schools are excellent, and you get the same NC governor's reproductive rights protections as Charlotte. Charlotte remains a very close second with the superior airport and higher diversity. Greenville is the lifestyle dark horse — best climate, lowest cost of living, safest — but the restrictive SC healthcare laws create real career risk for your wife as an RN. Des Moines is home, and its best argument is the water quality crisis: Iowa ranks #2 nationally for rising cancer rates, tied to nitrate contamination that affects the metro's drinking water.
-  </div>
-</div>
-</section>
-
-<!-- ── HOUSING ── -->
-<section class="section" id="housing">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🏠</div>
+<div id="app">
+<div class="screen active" id="screen-1">
+  <div class="screen-header">
     <div>
-      <h2 class="section-title">Housing Market</h2>
-      <p class="section-subtitle">What your $500–550K ideal budget (max $650K) gets you in each market</p>
+      <div class="screen-title">Find Your City</div>
+      <div class="screen-sub">Step 1 of 2 — Your family profile</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="progress-dots"><div class="dot-step done"></div><div class="dot-step"></div></div>
+      <button class="theme-btn" id="theme-btn">🌙</button>
     </div>
   </div>
+  <div class="screen-body" id="s1-body">
 
-  <div class="cmp fade-in">
-    <div class="cmp-hdr">
-      <div class="cmp-hdr-lbl"></div>
-      <div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div>
-      <div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div>
-      <div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div>
-      <div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">Metro Median Price (2026)</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">$287K</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$425K</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>$440K</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$350K</div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">$500–550K gets you…</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>4–5 BR luxury new build in Ankeny/Waukee; 2,800+ sqft</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>3–4 BR in Fort Mill SC/Matthews; Ballantyne near $650K ceiling</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>4 BR in Apex/Cary/Holly Springs; strong school zones</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>4 BR upscale in Five Forks/Simpsonville; 2,600+ sqft</div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">Best Suburbs (family-friendly)</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny, Waukee, Johnston</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fort Mill SC, Matthews, Weddington, Ballantyne</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Apex, Cary, Holly Springs, Wake Forest</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Five Forks, Simpsonville, Greer, Mauldin</div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">Property Tax Rate</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">1.5–1.8% (~$8.6K/yr on $500K)</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~0.62% (~$3.3K/yr on $525K)</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~0.62% (~$3.3K/yr on $525K)</span></div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~0.50% (~$2.6K/yr on $525K)</span></div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">Market Trend (2025→2026)</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Stable, slight appreciation; buyer's market</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Steady 2–3% appreciation; balanced</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>NAR Top 10 "hotspot" 2026; 3–5% projected; balanced</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>3–4% appreciation; strong demand from CLT overflow</div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">New Construction Availability</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">Abundant — Ankeny/Waukee actively building</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Good — Fort Mill/Weddington active</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Good — Apex/Holly Springs/Fuquay-Varina active</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Good — Five Forks growth corridor</div>
-    </div>
-    <div class="cmp-row">
-      <div class="cmp-lbl">Annual Property Tax on $525K</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">~$7,875–$9,450</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~$3,255–$3,640</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~$3,255–$3,640</span></div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~$2,625–$3,150</span></div>
-    </div>
-  </div>
-
-  <div class="insight-box mt-12 fade-in">
-    <strong>Housing bottom line:</strong> Des Moines is the undisputed best-value market — $500K buys a luxury home. But high property taxes (~1.6%) erode that advantage: you'll pay $5K–6K more per year in property taxes than in NC or SC. Raleigh and Charlotte offer nearly identical purchase-price ranges; Raleigh carries a slight new-construction advantage in fast-growing suburbs like Apex. Greenville offers the best combination of value + low tax outside of Des Moines.
-  </div>
-
-  <div class="verdict-block fade-in">
-    <div class="verdict-item"><strong class="dm">Des Moines</strong> Best sqft/$ — luxury home in budget. Property taxes offset the savings vs. NC/SC</div>
-    <div class="verdict-item"><strong class="clt">Charlotte</strong> Solid — $500K competitive for 3-4BR suburban. Fort Mill/Matthews strong value</div>
-    <div class="verdict-item"><strong class="ral">Raleigh</strong> Strong — Apex/Cary/Holly Springs excellent schools; NAR top 10 market for 2026</div>
-    <div class="verdict-item"><strong class="gvl">Greenville</strong> Best value in the South — $500K buys more than Charlotte/Raleigh; lowest taxes</div>
-  </div>
-</div>
-</section>
-
-<!-- ── JOBS ── -->
-<section class="section" id="jobs">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">💼</div>
-    <div>
-      <h2 class="section-title">Job Markets</h2>
-      <p class="section-subtitle">Software Engineer (10 yrs) + Registered Nurse full-time opportunities</p>
-    </div>
-  </div>
-
-  <div class="tab-group fade-in">
-    <button class="tab-btn active" onclick="switchTab('jobs','se')">👨‍💻 Software Engineer</button>
-    <button class="tab-btn" onclick="switchTab('jobs','rn')">👩‍⚕️ Registered Nurse</button>
-    <button class="tab-btn" onclick="switchTab('jobs','combined')">💰 Combined Income</button>
-  </div>
-
-  <div class="tab-panel active" id="jobs-se">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Avg SE Salary (10yr exp)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$113K–$127K</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$106K–$130K</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$119K–$140K (top range)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$90K–$115K</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Top Employers</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Principal Financial, Wellmark, EMC, John Deere, Wells Fargo</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Wells Fargo, Bank of America, AvidXchange, LendingTree, Credit Karma</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">IBM, Red Hat, Cisco, Epic Games, SAS Institute, Lenovo</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>BMW, Michelin, GE Vernova, Fluor, Sage Therapeutics</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Tech Industry</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Insurance/fintech, ag-tech, financial services</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fintech, banking tech, 21.3% job growth 2020–28</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">RTP: 300+ tech companies; biotech, software, open-source; 21.3% growth</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Industrial/manufacturing tech; smaller market</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Remote / Hybrid Culture</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Good — many insurance/fintech HQs</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — financial services hub</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Excellent — tech-forward culture; many hybrid-first employers</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — manufacturing dominant; less remote-friendly</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Insurance Industry Specifically</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">#1 — Principal, Wellmark, EMC all HQ'd here</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Good — Brighthouse Financial, Allstate regional hub</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Good — MetLife, Nationwide regional offices</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — not a major insurance hub</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Startup / Growth Ecosystem</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Small but growing fintech scene</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Growing — strong VC inflow, Charlotte startup corridor</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Best — RTP + NC State + Duke + UNC feed innovation pipeline; ~150 startups</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Small — nascent startup scene</div></div>
-    </div>
-    <div class="verdict-block mt-12 fade-in">
-      <div class="verdict-item"><strong class="dm">Des Moines</strong> Best city for insurance-specific SE roles. Narrower tech ecosystem but strong niche match for your current experience</div>
-      <div class="verdict-item"><strong class="clt">Charlotte</strong> Strong fintech/banking-tech hub; AvidXchange and LendingTree are modern tech employers; great for insurance-adjacent roles</div>
-      <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Best overall SE market — RTP has 300+ tech companies; IBM and Red Hat strong for open-source/enterprise; highest top-end salaries</div>
-      <div class="verdict-item"><strong class="gvl">Greenville</strong> Weakest SE market — manufacturing focus means fewer software roles; expect a pay cut of $5K–$25K vs. current</div>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="jobs-rn">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Avg RN Salary (full-time)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$72K–$82K</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$75K–$87K</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$78K–$87K (avg ~$83K)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$70K–$82K</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Top Employers</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>UnityPoint Health, MercyOne, Iowa Methodist</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Atrium Health, Novant Health, Carolina Medical Center</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Health, UNC Health, WakeMed (all top-tier)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health, Bon Secours St. Francis</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Sign-On Bonuses</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Limited — $3K–$8K typical</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — up to $15K+ at Atrium/Novant</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Strong — up to $15K at Duke Health/UNC Health</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — up to $10K at Prisma</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Career Advancement (NP/Mgmt)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate — U of Iowa academic pathway</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Atrium research + clinical advancement</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Excellent — Duke + UNC offer best academic nursing pathways in region</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — fewer academic/research positions</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Nurse Practitioner Pathway</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>UI College of Nursing (Iowa City)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>UNCC, Queens University programs</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke, UNC Chapel Hill, NC State (top-ranked NP programs)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Clemson, SC programs — solid but fewer options</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Legal Risk for RN Career</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Moderate — 6-week ban creates OB care legal chilling effect</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Low — Gov. Stein's EO protects providers; 12-week limit</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Low — Same NC protections as Charlotte; Duke/UNC provide legal cover</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">High — 6-week ban + near-total ban push; providers fleeing SC</span></div></div>
-    </div>
-    <div class="verdict-block mt-12 fade-in">
-      <div class="verdict-item"><strong class="dm">Des Moines</strong> Adequate market but shrinking OB workforce; 57% of Iowa counties now lack OB services; legal chilling effect real</div>
-      <div class="verdict-item"><strong class="clt">Charlotte</strong> Excellent — Atrium is a top-10 national system; generous sign-on bonuses; strong career trajectory</div>
-      <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Best for nursing career — Duke + UNC = strongest academic nursing ecosystem in the region; NP pathway is exceptional</div>
-      <div class="verdict-item"><strong class="gvl">Greenville</strong> Good pay, solid Prisma system — but SC's legal environment is a genuine career risk for OB-adjacent nursing roles</div>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="jobs-combined">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Estimated SE Salary</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$118K–$125K</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$115K–$130K</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$120K–$140K</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$95K–$115K</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Estimated RN Salary (full-time)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$75K–$82K</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$78K–$87K</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$78K–$87K</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$72K–$82K</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Combined Household Range</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$193K–$207K</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>$193K–$217K</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">$198K–$227K (highest ceiling)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>$167K–$197K (lowest)</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Income After State Tax (est. on $200K)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~$192.4K (3.8% flat)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~$191.5K (4.25% flat)</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~$191.5K (4.25% flat)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">~$188K (6% top rate)</span></div></div>
-    </div>
-    <div class="insight-box mt-12 fade-in">
-      <strong>Income summary:</strong> Raleigh offers the highest earning ceiling — the RTP tech market can push SE compensation well above Des Moines or Charlotte, while RN salaries are comparable to Charlotte. Greenville has the biggest income penalty both from lower SE salaries and South Carolina's higher income tax rate.
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- ── TAXES ── -->
-<section class="section" id="taxes">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🧾</div>
-    <div>
-      <h2 class="section-title">Tax Burden</h2>
-      <p class="section-subtitle">Income tax + property tax on $525K home — total annual obligation</p>
-    </div>
-  </div>
-  <div class="cmp fade-in">
-    <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">State Income Tax</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">3.8% flat (Iowa 2025)</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>4.25% flat (→3.99% in 2026)</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>4.25% flat (→3.99% in 2026)</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">Progressive up to 6.0% top rate</span></div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Est. Income Tax on $200K HH</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">~$7,600</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~$8,500</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~$8,500</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">~$11,500–$12,000</span></div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Property Tax Rate</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">1.5–1.8%</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~0.62%</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~0.62%</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~0.50%</span></div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Est. Property Tax on $525K</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">~$8,663–$9,450/yr</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~$3,255–$3,640/yr</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~$3,255–$3,640/yr</span></div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~$2,625–$3,150/yr</span></div></div>
-    <div class="cmp-row"><div class="cmp-lbl">No State Income Tax on Retirement?</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>No — all income taxed</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Partial — military/some pensions exempt</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Partial — military/some pensions exempt</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Partial — SC has favorable retirement income deductions</div></div>
-    <div class="cmp-row"><div class="cmp-lbl"><strong>Total Annual Tax Burden</strong><br><span style="font-weight:400;font-size:0.75rem">(income + property on $525K)</span></div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">~$16,263–$17,050</span></div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">~$11,755–$12,140</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~$11,755–$12,140</span></div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~$14,125–$15,150</div></div>
-  </div>
-  <div class="insight-box mt-12 fade-in">
-    <strong>Tax summary:</strong> Charlotte and Raleigh are identical on taxes — NC's flat 4.25% rate + low ~0.62% property tax makes them the best total tax deal. Des Moines has the lowest income tax rate but its property taxes are 3× higher, creating a $4K–$5K annual penalty. South Carolina's progressive income tax (up to 6%) means Greenville residents pay ~$3,000–$4,500 more per year than NC neighbors despite lower property taxes.
-  </div>
-  <div class="verdict-block fade-in">
-    <div class="verdict-item"><strong class="dm">Des Moines</strong> Best income tax rate (3.8%) but highest property tax — net total tax is highest of the four</div>
-    <div class="verdict-item"><strong class="clt">Charlotte</strong> 🏆 Tied for best total burden — flat NC rate + low property tax saves ~$4K–$5K/yr vs. Des Moines</div>
-    <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Identical to Charlotte — same NC state; same Wake County property rates</div>
-    <div class="verdict-item"><strong class="gvl">Greenville</strong> Low property tax but SC's progressive income tax adds ~$3K–$4K over NC at your income level</div>
-  </div>
-</div>
-</section>
-
-<!-- ── SCHOOLS ── -->
-<section class="section" id="schools">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🎓</div>
-    <div>
-      <h2 class="section-title">Schools & Childcare</h2>
-      <p class="section-subtitle">K–12 quality for your 5-year-old · Daycare cost for your 2-year-old</p>
-    </div>
-  </div>
-  <div class="tab-group fade-in">
-    <button class="tab-btn active" onclick="switchTab('schools','elem')">🏫 K–12 Schools</button>
-    <button class="tab-btn" onclick="switchTab('schools','daycare')">🍼 Daycare (Age 2)</button>
-  </div>
-
-  <div class="tab-panel active" id="schools-elem">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">State K–12 Ranking</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">Iowa: Top 3–5 nationally</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>NC: Mid-tier (~25th nationally)</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>NC: Mid-tier (~25th nationally)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>SC: ~35th nationally</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Math Proficiency (state avg)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">~70% proficient</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~50–51%</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~50–51%</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~45–47%</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Best Suburban Schools</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny (A+), Waukee (A+), Johnston (A)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Weddington (A+), Fort Mill (A+), Matthews (A)</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Apex (A+), Cary (A+), Holly Springs (A+) — Wake County top performers</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Five Forks (A), Simpsonville (A–), Mauldin (B+)</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Charter School Options</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Limited — Iowa has few charters</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>231 charter schools statewide; many excellent options</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>231 charter schools statewide; KIPP, NCVPS strong in Raleigh</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — SC charter growth underway</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">IB / STEM Programs</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Limited IB; Ankeny STEM strong</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Multiple IB programs; STEM academies in Mecklenburg</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">STEM magnet programs; proximity to NC State STEM pipeline; multiple IB options</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited IB; Clemson proximity helps STEM</div></div>
-    </div>
-    <div class="insight-box mt-12 fade-in">
-      <strong>School insight:</strong> Iowa leads the nation in raw academic outcomes — but your suburb choice matters everywhere. In Wake County (Raleigh), Apex and Cary schools perform comparably to Iowa's best suburbs in absolute test scores, despite lower state averages. Raleigh's academic culture benefits from the Research Triangle university environment and strong parental investment in education. For your 5-year-old entering kindergarten, any of these suburb choices will deliver strong schools.
-    </div>
-  </div>
-
-  <div class="tab-panel" id="schools-daycare">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Monthly Daycare Cost (Age 2)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>$833–$1,000/mo</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-warn">$1,000–$1,200/mo</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">$1,000–$1,100/mo</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">$540–$700/mo</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Annual Daycare Cost</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~$10K–$12K</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-warn">~$12K–$14.4K</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~$12K–$13.2K</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~$6.5K–$8.4K</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Daycare Availability</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Good — less demand pressure than Southeast</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Moderate — waitlists common in top areas</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Moderate — high demand in Apex/Cary; plan ahead</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Good — less competitive than larger metros</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Annual Savings vs. Charlotte</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Save ~$2K–$4K/yr vs. CLT</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Baseline</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Save ~$0–$2K/yr vs. CLT</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Save ~$6K–$8K/yr vs. CLT</span></div></div>
-    </div>
-    <div class="insight-box mt-12 fade-in">
-      <strong>Greenville's hidden advantage:</strong> Greenville ranks #43 nationally for least expensive childcare. The $6K–$8K annual savings vs. Charlotte/Raleigh is real and sustained — over 3 years of daycare before kindergarten, that's $18K–$24K in savings. This meaningfully offsets Greenville's income disadvantage.
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- ── DIVERSITY ── -->
-<section class="section" id="diversity">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🌍</div>
-    <div>
-      <h2 class="section-title">Diversity &amp; Community</h2>
-      <p class="section-subtitle">Racial, ethnic, and cultural makeup of each metro area</p>
-    </div>
-  </div>
-  <div class="cmp fade-in">
-    <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">White</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~75%</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>38.7%</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~53%</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~66%</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Black / African American</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~11%</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">33.7%</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~29%</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~20.5%</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Hispanic / Latino</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~8%</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~17%</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~11%</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~7.2%</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Asian</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~3%</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~6.5%</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~7% (tech workers, university community)</span></div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~2.5%</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Foreign-Born Population</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~10%</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">17.4% — highly cosmopolitan</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~14% — international tech/university workers</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~8%</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">Diversity Score (est. /100)</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~55/100</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">91/100</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">~78/100</span></div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~65/100</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">LGBTQ+ Community</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate — Iowa is generally accepting</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Charlotte has visible, active LGBTQ+ community</div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Strong — Raleigh ranks among most LGBTQ+-friendly SE cities; college-town culture</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — smaller community; conservative SC backdrop</div></div>
-    <div class="cmp-row"><div class="cmp-lbl">International Food / Culture</div>
-      <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Growing but limited</div>
-      <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Excellent — highly international restaurant/cultural scene</span></div>
-      <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Very good — university + tech worker population drives diversity of food + culture</div>
-      <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — improving rapidly with growth</div></div>
-  </div>
-  <div class="verdict-block mt-12 fade-in">
-    <div class="verdict-item"><strong class="dm">Des Moines</strong> Least diverse — 75% White; limited international community; growing but slowly</div>
-    <div class="verdict-item"><strong class="clt">Charlotte</strong> 🏆 Most diverse city in the South — truly multicultural; excellent for raising children in a diverse environment</div>
-    <div class="verdict-item"><strong class="ral">Raleigh</strong> Very diverse — Research Triangle's university + tech mix drives strong diversity; high Asian population; vibrant LGBTQ+ scene</div>
-    <div class="verdict-item"><strong class="gvl">Greenville</strong> Moderate and growing — less diverse than CLT/RAL but improving; still predominantly White</div>
-  </div>
-</div>
-</section>
-
-<!-- ── LIFESTYLE ── -->
-<section class="section" id="lifestyle">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🎭</div>
-    <div>
-      <h2 class="section-title">Lifestyle &amp; Livability</h2>
-      <p class="section-subtitle">Climate, safety, airport access, outdoor life, dining, and culture</p>
-    </div>
-  </div>
-  <div class="tab-group fade-in">
-    <button class="tab-btn active" onclick="switchTab('life','climate')">☀️ Climate</button>
-    <button class="tab-btn" onclick="switchTab('life','safety')">🛡️ Safety</button>
-    <button class="tab-btn" onclick="switchTab('life','airport')">✈️ Airport</button>
-    <button class="tab-btn" onclick="switchTab('life','outdoor')">🥾 Outdoors</button>
-    <button class="tab-btn" onclick="switchTab('life','dining')">🍽️ Dining</button>
-  </div>
-
-  <div class="tab-panel active" id="life-climate">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Winter (Dec–Feb avg)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Harsh — 24°F avg; snow & ice common</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Mild — 42°F avg; rare snow</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Mild — 40°F avg; rare snow (avg 3–4 in/yr)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Mildest — 44°F avg; minimal snow/ice</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Summer (Jun–Aug avg)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>84°F avg; humidity moderate</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>88°F avg; high humidity; heat index above 95°F common</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>88°F avg; similar to CLT; slightly less urban heat island</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">85°F avg; Blue Ridge moderates heat; best of SE</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Outdoor Activity Season</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~5–6 months (May–Oct)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~9–10 months</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~9–10 months (similar to CLT)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~10–11 months — most outdoor-friendly</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Severe Weather Risk</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Tornadoes, blizzards, ice storms</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Hurricanes (weakened), ice storms, occasional tornado</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Hurricanes (weakened), ice storms (more than CLT), occasional tornado</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Rare — Blue Ridge shields from most severe weather</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Sun Days / Year</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~201 days</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>~213 days</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~213 days</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">~218 days</span></div></div>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="life-safety">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Numbeo Crime Index (lower = safer)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~40–45</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-warn">49.17 — suburb selection critical</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~36–40 (safer than Charlotte)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">38.60 — safest overall</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Suburban Safety</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny, Waukee — very safe suburbs</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fort Mill SC, Weddington — very safe; inner Charlotte elevated</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Apex, Cary, Holly Springs — consistently among safest NC cities</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Five Forks, Simpsonville — among safest in SC</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Safest Suburbs for Families</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Ankeny (#1 safest Iowa city), Waukee</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Fort Mill SC (top 3 SC cities), Matthews, Weddington</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Apex (#1 safest NC city 2024), Cary (#2), Holly Springs (#3)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Five Forks, Simpsonville, Mauldin</div></div>
-    </div>
-    <div class="insight-box mt-12 fade-in">
-      <strong>Safety insight:</strong> Apex, NC is ranked the #1 safest city in North Carolina and among the top 10 safest in the Southeast. If safety is a top priority, Raleigh's suburbs (particularly Apex and Cary) are exceptional. Greenville overall scores best, but Raleigh's specific target suburbs beat any other city on this list.
-    </div>
-  </div>
-
-  <div class="tab-panel" id="life-airport">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Primary Airport</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>DSM (Des Moines Intl)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">CLT (American Airlines #2 hub)</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>RDU (Raleigh-Durham Intl)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>GSP (Greenville-Spartanburg)</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Nonstop Destinations</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>~30–40 cities</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">180+ nonstop destinations; direct to Europe</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~75 nonstop destinations; growing rapidly</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>~25–35 nonstop (CLT 90 min drive)</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">International Options</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>None direct — connect via Chicago/Minneapolis</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">London, Frankfurt, Mexico City, Cancún, direct</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>London (British Airways), Reykjavik, Cancún; more routes added annually</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>None direct — use CLT or Charlotte</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Drive Time to Airport</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>15–25 min from suburbs</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>20–35 min from suburbs</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>20–30 min from Apex/Cary</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>20–30 min; CLT backup = 90 min</div></div>
-    </div>
-    <div class="verdict-block mt-12 fade-in">
-      <div class="verdict-item"><strong class="dm">Des Moines</strong> Limited regional airport — domestic flights often require a connection; biggest lifestyle constraint</div>
-      <div class="verdict-item"><strong class="clt">Charlotte</strong> 🏆 Best airport by far — American hub with global reach; key advantage for family travel and business</div>
-      <div class="verdict-item"><strong class="ral">Raleigh</strong> Good and growing — 75+ nonstops; London direct; significant upgrade vs. Des Moines; not quite CLT but functional</div>
-      <div class="verdict-item"><strong class="gvl">Greenville</strong> Limited but CLT is 90 min away — manageable for major travel but adds friction vs. CLT/RDU cities</div>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="life-outdoor">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Terrain / Geography</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Flat plains; river trails</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Piedmont; lakes; rolling hills</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Piedmont; forests; lakes; rivers</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Blue Ridge foothills; waterfalls; rivers</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Mountains</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>None</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Blue Ridge 2 hrs away</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Blue Ridge 2.5 hrs away</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Blue Ridge 45 min — weekend hiking easily accessible</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Beach Access</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>None</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Myrtle Beach 3 hrs; Outer Banks 5 hrs</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Outer Banks 2.5 hrs; Wrightsville Beach 2.5 hrs — best beach access</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Myrtle Beach 3 hrs; Hilton Head 2.5 hrs</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Highlights</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Gray's Lake, Raccoon River Valley Trail, High Trestle Trail</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Lake Norman, U.S. National Whitewater Center, McDowell Nature Preserve</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Falls Lake, Jordan Lake, Umstead State Park, American Tobacco Trail</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Paris Mountain, Falls Park, Swamp Rabbit Trail, Table Rock 1 hr</span></div></div>
-    </div>
-  </div>
-
-  <div class="tab-panel" id="life-dining">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Food Scene Quality</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Growing — Ingersoll Ave, East Village neighborhoods emerging</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Excellent — SouthEnd, Plaza Midwood, NoDa; national-caliber restaurants</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Excellent — Downtown Raleigh, North Hills; James Beard nominees</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Nationally recognized for its size — Main St. scene is world-class per-capita</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Pro Sports</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Minor leagues only — Iowa Cubs (AAA), Iowa Wild (AHL)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Panthers (NFL), Hornets (NBA), Charlotte FC (MLS)</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Hurricanes (NHL) — strong fanbase; no NFL/NBA locally</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>No major pro teams; Swamp Rabbits (ECHL hockey)</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Arts / Culture / Music</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Des Moines Art Center; symphony; Iowa State Fair</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Spectrum Center (concerts), Blumenthal PAC, 2+ professional orchestras</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">DPAC (Duke Energy PAC, nationally ranked), NC Museum of Art, NC Symphony, vibrant live music</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Peace Center (excellent for size), growing arts scene, Artisphere festival</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">University Culture</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Drake University; Iowa State nearby (45 min)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>UNCC nearby; smaller college-town feel</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">NC State (in city), Duke 30 min, UNC 30 min — major university energy throughout</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Clemson 30 min; Furman University in city</div></div>
-    </div>
-  </div>
-</div>
-</section>
-
-<!-- ── HEALTH ── -->
-<section class="section" id="health">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🏥</div>
-    <div>
-      <h2 class="section-title">Health, Environment &amp; Policy</h2>
-      <p class="section-subtitle">Environmental risks · Air &amp; water quality · Healthcare policy affecting your family and your wife's nursing career</p>
-    </div>
-  </div>
-  <div class="tab-group fade-in">
-    <button class="tab-btn active" onclick="switchTab('health','env')">☣️ Environment</button>
-    <button class="tab-btn" onclick="switchTab('health','air')">💨 Air</button>
-    <button class="tab-btn" onclick="switchTab('health','water')">💧 Water</button>
-    <button class="tab-btn" onclick="switchTab('health','policy')">⚖️ Policy</button>
-    <button class="tab-btn" onclick="switchTab('health','hospitals')">🏨 Hospitals</button>
-  </div>
-
-  <div class="tab-panel active" id="health-env">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;font-size:0.8rem;color:var(--text2);line-height:1.6;">
-      <strong style="color:var(--text)">⚠️ Context:</strong> All four cities are livable and safe for families. These are documented public health concerns from government agencies and peer-reviewed research — presented to inform, not alarm. Most have simple mitigation steps.
-    </div>
-    <div class="info-grid fade-in">
-      <div class="info-card" style="border-top:3px solid var(--dm)">
-        <div class="info-card-title"><span class="dot dm"></span> Des Moines</div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-hi">🔴 HIGH</span><strong>Nitrate in Drinking Water</strong></div>
-        <p class="risk-body">Iowa ranks <strong>#2 nationally for cancer rate</strong> and is one of two states with rising rates. Des Moines metro tap water exceeds 5 mg/L about 40% of the time. Research links chronic nitrate exposure at even 3 mg/L to colorectal cancer, bladder cancer, and thyroid dysfunction. A 2024 University of Iowa study found 73% higher cancer mortality risk in people with detectable nitrate in drinking water.</p>
-        <p class="risk-tip">✔ Fix: Reverse osmosis under-sink filter (~$200–400) removes nitrates. Simple and effective.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>PFAS Contamination</strong></div>
-        <p class="risk-body">PFAS detected in multiple Iowa water systems. Iowa's regulatory response is slower than new EPA guidance. Linked to thyroid disease, liver damage, immune dysfunction, some cancers.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Algal Bloom Toxins (Microcystin)</strong></div>
-        <p class="risk-body">13 of 16 monitored Iowa lakes have issued microcystin advisories in the past 20 years. Dangerous for children and pets. Iowa has no enforceable drinking or recreational water standard.</p></div>
+    <!-- Household -->
+    <div class="form-card">
+      <div class="form-card-title">👨‍👩‍👧 Your Household</div>
+      <label class="form-label">Adults</label>
+      <div class="counter">
+        <button class="counter-btn" onclick="adj('adults',-1)">−</button>
+        <span class="counter-val" id="adults-val">2</span>
+        <button class="counter-btn" onclick="adj('adults',1)">+</button>
       </div>
-      <div class="info-card" style="border-top:3px solid var(--clt)">
-        <div class="info-card-title"><span class="dot clt"></span> Charlotte</div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-hi">🔴 HIGH</span><strong>Air Quality — Ozone &amp; PM2.5</strong></div>
-        <p class="risk-body">Charlotte earned a <strong>D for ozone</strong> and <strong>C for particle pollution</strong> in the 2025 ALA "State of the Air" report — both failing grades. Ranks <strong>79th worst nationally</strong> for ozone. Particularly concerning for children whose lungs develop until ~age 8.</p>
-        <p class="risk-tip">✔ Fix: Monitor AQI daily (AirNow app); HEPA purifiers indoors; limit outdoor exertion on Orange/Red days.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Urban Heat Island</strong></div>
-        <p class="risk-body">Rapid urbanization creates 5–10°F hotter temps in urban areas vs. suburbs in summer, compounding air quality days. Avg summer highs 90–93°F.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-lo">🟢 LOW</span><strong>Drinking Water</strong></div>
-        <p class="risk-body">Charlotte Water sources from Lake Norman and Mountain Island Lake — well-protected watersheds meeting all EPA standards. No documented nitrate or cancer-linked contamination.</p></div>
+      <div class="divider"></div>
+      <label class="form-label">Children</label>
+      <div class="kids-list" id="kids-list"></div>
+      <button class="btn btn-ghost mt8" style="font-size:.8rem;padding:8px" onclick="addKid()">+ Add Child</button>
+    </div>
+
+    <!-- Budget -->
+    <div class="form-card">
+      <div class="form-card-title">🏠 Home Purchase Budget</div>
+      <div class="budget-display" id="budget-display">$500,000</div>
+      <div class="range-wrap">
+        <input type="range" id="budget-slider" min="150000" max="900000" step="10000" value="500000" oninput="updateBudget(this.value)">
       </div>
-      <div class="info-card" style="border-top:3px solid var(--ral)">
-        <div class="info-card-title"><span class="dot ral"></span> Raleigh</div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Air Quality — Particle Pollution</strong></div>
-        <p class="risk-body">Raleigh-Durham receives a <strong>C for particle pollution</strong> in the 2025 ALA "State of the Air" report. Ozone grades are better than Charlotte. Less urban heat island than Charlotte. Still a concern for sensitive groups and young children.</p>
-        <p class="risk-tip">✔ Fix: Same as Charlotte — AQI monitoring app; HEPA purifier; limit outdoor exertion on elevated days.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-lo">🟢 LOW</span><strong>Drinking Water</strong></div>
-        <p class="risk-body">Raleigh sources water from Falls Lake and Jordan Lake — protected reservoirs with minimal agricultural pressure. Generally clean water with no major contamination issues documented.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Pollen (Seasonal Allergies)</strong></div>
-        <p class="risk-body">The NC Piedmont region has high tree/grass pollen. Research Triangle ranks among harder allergy cities in the Southeast. Long growing season (9–10 months) means extended exposure windows.</p></div>
-      </div>
-      <div class="info-card" style="border-top:3px solid var(--gvl)">
-        <div class="info-card-title"><span class="dot gvl"></span> Greenville</div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-med">🟡 MOD</span><strong>Water Disinfection Byproducts</strong></div>
-        <p class="risk-body">Greenville water meets all EPA standards but treatment produces HAA5 (haloacetic acids) at <strong>108× the EWG recommended limit</strong> (within EPA legal bounds). Chromium-6 is 2.6× above EWG threshold. Long-term concern; not an acute emergency.</p>
-        <p class="risk-tip">✔ Fix: Activated carbon filter (Brita, under-sink) significantly reduces HAAs and chromium-6.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-hi">🔴 HIGH</span><strong>Pollen — Extreme Allergy Burden</strong></div>
-        <p class="risk-body">Greenville regularly ranks among the worst US cities for allergy sufferers. The 10–11-month growing season means extended high-pollen exposure. Relevant especially for children prone to respiratory allergies.</p></div>
-        <div class="risk-row"><div class="risk-row-hd"><span class="sev-lo">🟢 LOW</span><strong>Air Quality (Best of 4)</strong></div>
-        <p class="risk-body">SC earns mostly A's and B's statewide in the 2025 ALA report. Blue Ridge geography provides natural air circulation. Cleanest air of the four cities for general respiratory health.</p></div>
+      <div class="range-labels"><span>$150K</span><span>$900K</span></div>
+    </div>
+
+    <!-- Person 1 -->
+    <div class="form-card">
+      <div class="form-card-title">💼 Household Member 1 — Job Role</div>
+      <div class="role-grid" id="roles-1"></div>
+      <div style="margin-top:10px;" id="exp1-wrap">
+        <label class="form-label" style="font-size:0.78rem">Experience Level</label>
+        <div class="exp-pills" id="exp-pills-1"></div>
       </div>
     </div>
-  </div>
 
-  <div class="tab-panel" id="health-air">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">2025 ALA Ozone (Smog) Grade</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">B — Pass</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">D — Fail</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">C — Marginal</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">A–B — Pass</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">2025 ALA Particle Pollution Grade</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-win">B–C</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">C — Fail</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">C — Fail</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Pass — Good</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">National Ozone Ranking</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Not in worst 100</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">79th worst nationally</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>~120th (worse than average, better than CLT)</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Not ranked — good air</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Child Lung Development Risk</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Low</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">Elevated — ozone exposure during lung development ages</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-warn">Moderate — monitor on bad days</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Low — cleanest air</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Asthma Trigger Risk</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Low-Moderate (cold air + particulates in winter)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-red">High — ozone + heat + humidity = prime asthma conditions</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Moderate — pollen + occasional ozone</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Moderate — primarily pollen-driven</div></div>
+    <!-- Person 2 -->
+    <div class="form-card">
+      <div class="form-card-title">💼 Household Member 2 — Job Role <span class="text2" style="font-size:.72rem;font-weight:400">(optional)</span></div>
+      <div class="role-grid" id="roles-2"></div>
+      <div style="margin-top:10px;" id="exp2-wrap" class="hidden">
+        <label class="form-label" style="font-size:0.78rem">Experience Level</label>
+        <div class="exp-pills" id="exp-pills-2"></div>
+      </div>
     </div>
-    <div class="insight-box mt-12 fade-in">
-      <strong>Air quality summary:</strong> Greenville is the clear winner; Des Moines is second-best. Charlotte has the worst air quality — a D for ozone is a legitimate health concern for children ages 5 and under whose lungs are still developing. Raleigh is meaningfully better than Charlotte on ozone but still gets a C for particle pollution. If respiratory health is a priority, weight this heavily toward Greenville or Des Moines.
-    </div>
-  </div>
 
-  <div class="tab-panel" id="health-water">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Primary Water Source</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Raccoon &amp; Des Moines Rivers (heavy ag runoff)</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Lake Norman + Mountain Island Lake</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Falls Lake + Jordan Lake (protected reservoirs)</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">North Saluda Reservoir (minimal ag activity)</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Nitrate Contamination</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-red">5–8 mg/L chronic; cancer-rate link documented</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Low — no significant concern</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Low — protected source waters</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-win">Low</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Disinfection Byproducts (HAA5)</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate concern</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Low</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Low</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-warn">108× EWG limit (within EPA legal bounds)</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Overall Water Safety</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Moderate risk — reverse osmosis recommended</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Good</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Good</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Good with carbon filter</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Recommended Home Filter</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><strong>Reverse osmosis</strong> — essential for nitrate removal (~$300)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Standard carbon filter sufficient</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>Standard carbon filter sufficient</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Activated carbon filter reduces HAAs (~$30–50)</div></div>
-    </div>
   </div>
-
-  <div class="tab-panel" id="health-policy">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;font-size:0.8rem;color:var(--text2);line-height:1.6;">
-      <strong style="color:var(--text)">📌 Note:</strong> Enacted laws and documented trends as of early 2026. Particularly relevant for your wife's nursing career in women's health settings.
-    </div>
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Iowa</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">N. Carolina</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">N. Carolina</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">S. Carolina</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Current Abortion Law</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>6-week ban in effect since July 2024</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>12-week ban since July 2023; 72-hr wait</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span>12-week ban since July 2023; Gov. Stein EO protects providers</div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">6-week ban upheld unanimously by SC Supreme Court (May 2025)</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Proposed Legislation</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Fetal personhood bills; medication abortion mail restrictions</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Gov. Stein EO (Jan 2025) actively shields providers and patients</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Same NC protections — Gov. Stein EO protects all NC providers equally</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">SB 323 near-total ban proposed; would criminalize providers up to 30 yrs</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">RN Career Legal Risk</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Moderate — vague law creating OB care chilling effect; some doctors investigated</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">Low — Governor's EO + Atrium/Novant provide legal clarity</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Low — same NC protections; Duke/UNC provide additional legal cover as academic systems</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">High — SC provider exodus underway; 8,000+ residents traveled out-of-state for care in 2024</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">OB-GYN Workforce Trend</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span><span class="badge badge-warn">Shrinking — 57% of Iowa counties lack OB services (2024)</span></div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Atrium and Novant maintain robust OB</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Strong + growing — Duke/UNC OB residency programs attract top talent</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span><span class="badge badge-red">Declining — doctors actively leaving SC due to legal climate</span></div></div>
-      <div class="cmp-row"><div class="cmp-lbl">IVF Access</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>At-risk — fetal personhood bills stalled but could return</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span><span class="badge badge-win">No current restrictions or pending threats</span></div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">No current restrictions or pending threats</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>SB 323 sponsor says IVF exempt but criminal penalties could chill providers</div></div>
-    </div>
-    <div class="insight-box mt-12 fade-in">
-      <strong>Critical for your wife's nursing career:</strong> Both Raleigh and Charlotte benefit from NC Governor Stein's protective Executive Order — the most provider-friendly stance of any state on this list. South Carolina is the most restrictive, with documented cases of doctors facing legal scrutiny for routine miscarriage/ectopic care. An OB-adjacent RN in SC faces real career and legal risk. Des Moines is restrictive and tightening. For your wife's long-term career, NC (either city) is the clear safer choice.
-    </div>
-  </div>
-
-  <div class="tab-panel" id="health-hospitals">
-    <div class="cmp fade-in">
-      <div class="cmp-hdr"><div class="cmp-hdr-lbl"></div><div class="cmp-city" style="background:#2563EB;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Des Moines</div><div class="cmp-city" style="background:#16A34A;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Charlotte</div><div class="cmp-city" style="background:#D4720F;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Raleigh</div><div class="cmp-city" style="background:#7C3AED;color:white;padding:9px 12px;font-size:0.72rem;font-weight:700;text-align:center">Greenville</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Top Hospital Systems</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>UnityPoint Health, MercyOne Iowa Methodist</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Atrium Health (Top 10 national), Novant Health</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Health (top-5 national), UNC Health (top-15 national), WakeMed</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health, Bon Secours St. Francis</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Pediatric Specialty Care</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Stead Family Children's (U of Iowa — 1.5 hrs Iowa City)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Levine Children's Hospital — U.S. News nationally ranked</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Children's (top-5 nationally), UNC Children's — best academic pediatric care in SE</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health Children's — solid regional, not nationally ranked</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Cancer Center</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Iowa Oncology, MercyOne Cancer Center</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Atrium Levine Cancer Institute</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke Cancer Institute (NCI-designated) — nationally ranked</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Prisma Health Cancer Institute — regional</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">Academic Medical Research</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>Moderate — Iowa City is 1.5 hrs for University of Iowa research</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>Strong — Atrium expanding research partnerships with UNCC</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Best — Duke and UNC are consistently top-10 medical research universities nationally</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Limited — Prisma research growing but not academically anchored</div></div>
-      <div class="cmp-row"><div class="cmp-lbl">NP / Advanced Nursing Education</div>
-        <div class="cmp-val dm-v"><span class="mob-lbl dm-c">Des Moines</span>U of Iowa College of Nursing (Iowa City)</div>
-        <div class="cmp-val clt-v"><span class="mob-lbl clt-c">Charlotte</span>UNCC, Queens University programs</div>
-        <div class="cmp-val ral-v"><span class="mob-lbl ral-c">Raleigh</span><span class="badge badge-win">Duke School of Nursing (top-5 NP program), UNC Chapel Hill (top-10) — exceptional</span></div>
-        <div class="cmp-val gvl-v"><span class="mob-lbl gvl-c">Greenville</span>Clemson, SC programs — solid regionals</div></div>
-    </div>
-    <div class="verdict-block mt-12 fade-in">
-      <div class="verdict-item"><strong class="dm">Des Moines</strong> Adequate routine care; Iowa City academic center is excellent but 1.5 hrs away; OB access declining statewide</div>
-      <div class="verdict-item"><strong class="clt">Charlotte</strong> Excellent — Atrium is top-10 nationally; Levine Children's is nationally ranked for your kids</div>
-      <div class="verdict-item"><strong class="ral">Raleigh</strong> 🏆 Best hospital infrastructure — Duke + UNC = top academic medical combo in the SE; Duke Cancer Institute NCI-designated; best NP pathway for your wife</div>
-      <div class="verdict-item"><strong class="gvl">Greenville</strong> Good regional care via Prisma; shorter wait times; limited mental health resources and weakening OB access</div>
-    </div>
+  <div class="screen-footer">
+    <button class="btn btn-primary" onclick="goToPriorities()">Next: Set Priorities →</button>
   </div>
 </div>
-</section>
 
-<!-- ── SCORECARD ── -->
-<section class="section" id="scorecard">
-<div class="wrap">
-  <div class="section-header fade-in">
-    <div class="section-icon">🏆</div>
+<div class="screen" id="screen-2">
+  <div class="screen-header">
     <div>
-      <h2 class="section-title">Final Scorecard</h2>
-      <p class="section-subtitle">13 KPIs rated 1–5, weighted for your family's specific profile</p>
+      <div class="screen-title">Priorities</div>
+      <div class="screen-sub">Step 2 of 2 — What matters most to you?</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="progress-dots"><div class="dot-step done"></div><div class="dot-step done"></div></div>
     </div>
   </div>
+  <div class="screen-body">
 
-  <div class="scorecard fade-in">
-    <div class="score-hdr">
-      <div class="score-hdr-lbl"></div>
-      <div class="score-hdr-city" style="background:#2563EB;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Des Moines</div>
-      <div class="score-hdr-city" style="background:#16A34A;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Charlotte</div>
-      <div class="score-hdr-city" style="background:#D4720F;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Raleigh</div>
-      <div class="score-hdr-city" style="background:#7C3AED;color:white;padding:10px 12px;font-size:0.78rem;font-weight:700;text-align:center">Greenville</div>
+    <!-- Presets -->
+    <div class="form-card">
+      <div class="form-card-title">⚡ Quick Presets</div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="applyPreset('family')">👨‍👩‍👧 Family First</button>
+        <button class="preset-btn" onclick="applyPreset('career')">📈 Career Focus</button>
+        <button class="preset-btn" onclick="applyPreset('cost')">💰 Low Cost</button>
+        <button class="preset-btn" onclick="applyPreset('lifestyle')">☀️ Best Lifestyle</button>
+      </div>
     </div>
 
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🏠 Housing Value</div><div class="score-note">What $500–650K gets you</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Best $/sqft</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐<span>Competitive</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>Good, not cheap</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐<span>Great SE value</span></div></div>
+    <!-- Sliders -->
+    <div class="form-card">
+      <div class="form-card-title">🎚️ Fine-Tune Your Priorities (1 = low, 5 = high)</div>
+      <div id="priority-sliders"></div>
     </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">👨‍💻 SE Job Market</div><div class="score-note">Full Stack, 10yrs, insurance background</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>Good niche fit</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>Fintech hub</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐⭐<span>RTP — best ceiling</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>Limited tech roles</span></div></div>
+
+    <!-- Cities -->
+    <div class="form-card">
+      <div class="form-card-title">🗺️ Select Cities to Compare</div>
+      <div class="city-select-note">Pick 2 to 5 cities</div>
+      <div class="city-select-count" id="city-count">4 selected</div>
+      <div class="city-grid" id="city-grid"></div>
     </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">👩‍⚕️ RN Job Market</div><div class="score-note">Full-time nursing, career growth, legal safety</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>Shrinking OB access</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>Atrium hub</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Duke + UNC = best</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>Legal career risk</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🧾 Income Tax Rate</div><div class="score-note">State income tax on ~$200K HH</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐⭐<span>3.8% flat — best</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>4.25% flat</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>4.25% flat</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>Up to 6.0%</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🏘️ Property Tax</div><div class="score-note">Annual tax on $525K home</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>~$8.7K/yr</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>~$3.4K/yr</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>~$3.4K/yr</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>~$2.8K/yr</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🎓 School Quality</div><div class="score-note">K–12 suburban school ratings</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Iowa top 3–5 nationally</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐<span>Suburb-dependent</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>Apex/Cary A+ rated</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐<span>B+/A in suburbs</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🍼 Daycare Cost</div><div class="score-note">Monthly cost for 2-year-old</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>~$900/mo</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐<span>~$1,100/mo</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐<span>~$1,050/mo</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>~$620/mo — lowest</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🌍 Diversity</div><div class="score-note">Ethnic, cultural, international mix</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>~55/100 score</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐⭐<span>91/100 — best</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>~78/100 — very good</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐<span>~65/100 — moderate</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">🛡️ Safety</div><div class="score-note">Crime index (lower = safer)</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐<span>Index ~42</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐<span>Index ~49 (suburb varies)</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐<span>Apex #1 safest NC city</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Index ~38 — safest</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">💨 Air Quality</div><div class="score-note">2025 ALA State of the Air grades</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐⭐⭐<span>B grades overall</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐<span>D ozone — concerning</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>C particle — moderate</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>A–B — cleanest</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">💧 Water Quality</div><div class="score-note">Source water safety, contamination risk</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>Nitrate cancer link</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐<span>Good — clean source</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐⭐⭐<span>Best — protected reservoirs</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐<span>Good (with filter)</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">☀️ Climate &amp; Livability</div><div class="score-note">Year-round outdoor quality of life</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>Harsh winters</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐<span>9–10 mo outdoor</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>9–10 mo outdoor</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐⭐⭐⭐<span>10–11 mo — best</span></div></div>
-    </div>
-    <div class="score-row">
-      <div class="score-meta"><div class="score-label">✈️ Airport &amp; Travel</div><div class="score-note">Nonstop destinations, travel friction</div></div>
-      <div class="score-cell dm-s"><span class="score-mob-lbl dm-c">Des Moines</span><div class="score-stars">⭐⭐<span>~35 nonstops</span></div></div>
-      <div class="score-cell clt-s"><span class="score-mob-lbl clt-c">Charlotte</span><div class="score-stars">⭐⭐⭐⭐⭐<span>180+ nonstops — hub</span></div></div>
-      <div class="score-cell ral-s"><span class="score-mob-lbl ral-c">Raleigh</span><div class="score-stars">⭐⭐⭐<span>75+ nonstops; growing</span></div></div>
-      <div class="score-cell gvl-s"><span class="score-mob-lbl gvl-c">Greenville</span><div class="score-stars">⭐⭐<span>~30 nonstops</span></div></div>
-    </div>
+
   </div>
-
-  <!-- Totals -->
-  <div class="totals fade-in" style="margin-top:20px">
-    <div class="total-card">
-      <div class="total-city" style="color:var(--dm)">🔵 Des Moines</div>
-      <div class="total-score" style="color:var(--dm)">41</div>
-      <div class="total-bar" style="background:var(--dm);width:63%"></div>
-      <div class="total-rank">out of 65 · 🏅 4th place</div>
+  <div class="screen-footer">
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="showScreen('screen-1')">← Back</button>
+      <button class="btn btn-primary" onclick="generateResults()">Compare Cities →</button>
     </div>
-    <div class="total-card">
-      <div class="total-city" style="color:var(--clt)">🟢 Charlotte</div>
-      <div class="total-score" style="color:var(--clt)">48</div>
-      <div class="total-bar" style="background:var(--clt);width:74%"></div>
-      <div class="total-rank">out of 65 · 🥈 2nd place</div>
-    </div>
-    <div class="total-card" style="border:2px solid var(--ral);position:relative">
-      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--ral);color:white;font-size:0.68rem;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap">TOP PICK</div>
-      <div class="total-city" style="color:var(--ral)">🟠 Raleigh</div>
-      <div class="total-score" style="color:var(--ral)">51</div>
-      <div class="total-bar" style="background:var(--ral);width:78%"></div>
-      <div class="total-rank">out of 65 · 🥇 1st place</div>
-    </div>
-    <div class="total-card">
-      <div class="total-city" style="color:var(--gvl)">🟣 Greenville</div>
-      <div class="total-score" style="color:var(--gvl)">48</div>
-      <div class="total-bar" style="background:var(--gvl);width:74%"></div>
-      <div class="total-rank">out of 65 · 🥈 2nd (tied)</div>
-    </div>
-  </div>
-
-  <div class="insight-box mt-12 fade-in" style="border-left-color:var(--ral)">
-    <strong style="color:var(--ral)">Final recommendation:</strong><br><br>
-    🥇 <strong>Raleigh, NC</strong> — Research Triangle is the best SE job market for both roles. Duke + UNC = nationally ranked hospitals and the best NP pathway for your wife's career. Apex and Cary are among the safest cities in the country. Same NC Gov. Stein protections as Charlotte. <em>Targets: Apex, Cary, Holly Springs.</em><br><br>
-    🥈 <strong>Charlotte, NC</strong> — Very close second. Best airport of the four cities (critical for travel). Highest diversity score. Atrium Health is excellent. The D-grade air quality is the main differentiator vs. Raleigh. <em>Targets: Fort Mill SC, Matthews, Weddington.</em><br><br>
-    🥉 <strong>Greenville, SC</strong> — Best lifestyle and lowest cost of living. Cleanest air, safest city, $6K–$8K cheaper daycare. But SC's near-total abortion ban push creates real legal risk for your wife's nursing career — hard to recommend given that exposure. <em>Only if you monitor SC legislation closely.</em><br><br>
-    🏅 <strong>Des Moines, IA</strong> — Home has its advantages: best housing value, lowest income tax. But Iowa's documented #2 cancer rate tied to nitrate contamination, the harshest winters, the least diverse metro, and the weakest SE job market make it the least compelling destination move.
   </div>
 </div>
-</section>
+
+<div class="screen" id="screen-3">
+  <div class="results-topbar">
+    <button class="topbar-btn" onclick="showScreen('screen-2')">← Edit</button>
+    <div class="results-topbar-title">Your Comparison</div>
+    <button class="topbar-btn" onclick="shareApp()">Share 🔗</button>
+  </div>
+  <div class="results-subnav" id="results-subnav"></div>
+  <div id="results-content"></div>
+</div>
+
+<div class="toast" id="toast">Link copied!</div>
+</div><!-- end #app -->
 
 <script>
-// ── Theme ──
-const btn = document.getElementById('theme-btn');
-const stored = localStorage.getItem('theme');
-if (stored === 'dark') { document.documentElement.setAttribute('data-theme','dark'); btn.textContent = '☀️'; }
-btn.addEventListener('click', () => {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
-  btn.textContent = isDark ? '🌙' : '☀️';
-  localStorage.setItem('theme', isDark ? '' : 'dark');
+// ═══════════════════════════════════════
+// CITY DATA
+// ═══════════════════════════════════════
+const CITIES = {
+  des_moines: {
+    id:'des_moines', name:'Des Moines', state:'IA', abbr:'DM',
+    type:'metro', color:'#2563EB', emoji:'🔵',
+    jobCity:'des_moines',
+    pitch:'Best housing value & lowest income tax — harsh winters, limited diversity',
+    housing:{ median:287000, taxRate:0.0165, bestSuburbs:'Ankeny, Waukee, Johnston', trend:'Stable, modest appreciation; buyer-friendly', valueBonus:1 },
+    jobs:{
+      se:  {mid:120000, range:'$113K–$127K', employers:'Principal Financial, Wellmark, EMC, John Deere', score:3},
+      qa:  {mid:80000,  range:'$70K–$95K',   employers:'Principal Financial, Wellmark, Hy-Vee IT', score:3},
+      da:  {mid:78000,  range:'$68K–$92K',   employers:'Principal Financial, EMC, Iowa Farm Bureau', score:3},
+      it:  {mid:68000,  range:'$55K–$80K',   employers:'UnityPoint Health, Wellmark, Nationwide', score:3},
+      rn:  {mid:77000,  range:'$72K–$82K',   employers:'UnityPoint Health, MercyOne, Iowa Methodist', bonus:'$3K–$8K', score:3},
+    },
+    taxes:{ stateRate:0.038, propRate:0.0165, note:'Flat 3.8% income tax (best); property tax 1.65% (highest of group)', score:2 },
+    schools:{ rank:'Top 3–5 nationally', rating:'A+', district:'Ankeny/Waukee CSD', proficiency:70, score:5 },
+    daycare:{ monthly:900, score:4 },
+    safety:{ index:42, safest:'Ankeny (#1 safest Iowa city), Waukee', score:3 },
+    climate:{ winter:'24°F avg', summer:'84°F avg', outdoorMo:6, hazards:'Tornadoes, blizzards, ice storms', score:2 },
+    environment:{ air:'B grade ozone', water:'⚠️ Nitrate contamination documented (cancer-rate link); reverse osmosis essential', score:3 },
+    diversity:{ pctWhite:75, pctBlack:11, pctHisp:8, pctAsian:3, score:55, note:'Least diverse — growing slowly', scoreRating:2 },
+    airport:{ code:'DSM', nonstops:35, intl:false, note:'Regional only — domestic connections required', score:2 },
+    healthcare:{ systems:'UnityPoint Health, MercyOne, Iowa Methodist', rnRisk:'Moderate', policy:'6-week ban enforced; 57% Iowa counties lack OB services', score:3 },
+  },
+  charlotte: {
+    id:'charlotte', name:'Charlotte', state:'NC', abbr:'CLT',
+    type:'metro', color:'#16A34A', emoji:'🟢',
+    jobCity:'charlotte',
+    pitch:'Best airport & diversity; Atrium Health top-10 nationally; air quality concern',
+    housing:{ median:425000, taxRate:0.0062, bestSuburbs:'Fort Mill SC, Matthews, Weddington, Ballantyne', trend:'2–3% appreciation; balanced market', valueBonus:0 },
+    jobs:{
+      se:  {mid:118000, range:'$106K–$130K', employers:"Wells Fargo, Bank of America, AvidXchange, LendingTree, Credit Karma", score:4},
+      qa:  {mid:90000,  range:'$80K–$102K',  employers:"Bank of America, Lowe's, Duke Energy, Honeywell", score:4},
+      da:  {mid:88000,  range:'$78K–$98K',   employers:"Bank of America, Wells Fargo, Lowe's, Atrium Health", score:4},
+      it:  {mid:75000,  range:'$62K–$88K',   employers:'Atrium Health, Novant Health, Wells Fargo, Deloitte', score:4},
+      rn:  {mid:81000,  range:'$75K–$87K',   employers:'Atrium Health, Novant Health, Carolina Medical Center', bonus:'Up to $15K+', score:4},
+    },
+    taxes:{ stateRate:0.0425, propRate:0.0062, note:'Flat 4.25% → 3.99% in 2026; very low 0.62% property tax; best total burden', score:4 },
+    schools:{ rank:'~25th nationally (suburb-dependent)', rating:'A+ in suburbs', district:'Charlotte-Mecklenburg (suburb varies)', proficiency:51, score:3 },
+    daycare:{ monthly:1100, score:2 },
+    safety:{ index:49, safest:'Weddington, Fort Mill SC, Matthews', score:2 },
+    climate:{ winter:'42°F avg', summer:'88°F avg', outdoorMo:9, hazards:'Occasional ice storms, weakened hurricanes', score:4 },
+    environment:{ air:'D ozone (79th worst nationally), C particle — ALA 2025', water:'Good — Lake Norman/Mountain Island Lake; clean source water', score:2 },
+    diversity:{ pctWhite:38.7, pctBlack:33.7, pctHisp:17, pctAsian:6.5, score:91, note:'Most diverse — 17.4% foreign-born; truly multicultural', scoreRating:5 },
+    airport:{ code:'CLT', nonstops:180, intl:true, note:'American Airlines #2 hub — 180+ nonstops, Europe direct', score:5 },
+    healthcare:{ systems:'Atrium Health (Top 10 national), Novant Health', rnRisk:'Low', policy:'12-week limit; Gov. Stein EO protects providers actively', score:5 },
+  },
+  raleigh: {
+    id:'raleigh', name:'Raleigh', state:'NC', abbr:'RAL',
+    type:'metro', color:'#D4720F', emoji:'🟠',
+    jobCity:'raleigh',
+    pitch:'Best IT job market (RTP); Duke + UNC hospitals; Apex is #1 safest NC city',
+    housing:{ median:440000, taxRate:0.0062, bestSuburbs:'Apex, Cary, Holly Springs, Wake Forest', trend:'NAR Top 10 hotspot 2026; 3–5% projected growth', valueBonus:0 },
+    jobs:{
+      se:  {mid:130000, range:'$119K–$140K', employers:'IBM, Red Hat, Cisco, Epic Games, SAS Institute, Lenovo', score:5},
+      qa:  {mid:95000,  range:'$85K–$108K',  employers:'IBM, Cisco, Red Hat, Lenovo, Bandwidth, Pendo', score:5},
+      da:  {mid:93000,  range:'$82K–$105K',  employers:'SAS Institute, IBM, Duke Health, UNC Health, Bandwidth', score:5},
+      it:  {mid:82000,  range:'$68K–$95K',   employers:'Duke Health, UNC Health, WakeMed, IBM, Cisco, Deloitte', score:5},
+      rn:  {mid:83000,  range:'$78K–$87K',   employers:'Duke Health, UNC Health, WakeMed, Rex Hospital (UNC)', bonus:'Up to $15K', score:5},
+    },
+    taxes:{ stateRate:0.0425, propRate:0.0062, note:'Same as Charlotte — flat 4.25%; very low 0.62% property tax', score:4 },
+    schools:{ rank:'~25th nationally', rating:'A+ (Apex, Cary, Holly Springs)', district:'Wake County Public Schools', proficiency:51, score:4 },
+    daycare:{ monthly:1050, score:2 },
+    safety:{ index:38, safest:'Apex (#1 safest NC city), Cary (#2), Holly Springs (#3)', score:4 },
+    climate:{ winter:'40°F avg', summer:'88°F avg', outdoorMo:9, hazards:'Rare ice storms, weakened hurricanes', score:4 },
+    environment:{ air:'C particle pollution (ALA 2025); ozone better than Charlotte', water:'Good — Falls Lake/Jordan Lake protected reservoirs; cleanest of NC cities', score:3 },
+    diversity:{ pctWhite:53, pctBlack:29, pctHisp:11, pctAsian:7, score:78, note:'Very diverse — strong Asian population from RTP tech; LGBTQ+ friendly', scoreRating:4 },
+    airport:{ code:'RDU', nonstops:75, intl:true, note:'75+ nonstops; London direct; growing rapidly; 20 min from Apex/Cary', score:3 },
+    healthcare:{ systems:'Duke Health (Top 5 national), UNC Health (Top 15), WakeMed', rnRisk:'Low', policy:'Same NC Gov. Stein protections; Duke/UNC provide strong legal cover for providers', score:5 },
+  },
+  greenville: {
+    id:'greenville', name:'Greenville', state:'SC', abbr:'GVL',
+    type:'metro', color:'#7C3AED', emoji:'🟣',
+    jobCity:'greenville',
+    pitch:'Best climate & cheapest daycare; SC healthcare laws create real RN career risk',
+    housing:{ median:350000, taxRate:0.0050, bestSuburbs:'Five Forks, Simpsonville, Greer, Mauldin', trend:'3–4% appreciation; Charlotte overflow demand', valueBonus:0.5 },
+    jobs:{
+      se:  {mid:102000, range:'$90K–$115K', employers:'BMW, Michelin, GE Vernova, Fluor, Sage Therapeutics', score:2},
+      qa:  {mid:78000,  range:'$68K–$90K',  employers:'BMW, Michelin, GE Vernova, Bosch, Dräger', score:2},
+      da:  {mid:75000,  range:'$65K–$88K',  employers:'Prisma Health, BMW, Michelin, TD Bank', score:2},
+      it:  {mid:65000,  range:'$55K–$78K',  employers:'Prisma Health, Bon Secours, BMW, Michelin', score:2},
+      rn:  {mid:76000,  range:'$70K–$82K',  employers:'Prisma Health, Bon Secours St. Francis', bonus:'Up to $10K', score:3},
+    },
+    taxes:{ stateRate:0.060, propRate:0.0050, note:'SC progressive up to 6% — adds ~$3K–$4K vs NC at higher incomes despite lowest property tax', score:2 },
+    schools:{ rank:'~35th nationally', rating:'A in suburbs', district:'Greenville County Schools', proficiency:46, score:3 },
+    daycare:{ monthly:620, score:5 },
+    safety:{ index:39, safest:'Five Forks, Simpsonville — among safest in SC', score:4 },
+    climate:{ winter:'44°F avg', summer:'85°F avg', outdoorMo:10, hazards:'Rare — Blue Ridge shields most severe weather', score:5 },
+    environment:{ air:'A–B grades (ALA 2025) — cleanest air of all 8 cities', water:'Good with activated carbon filter — HAA5 and chromium-6 within EPA bounds', score:4 },
+    diversity:{ pctWhite:66, pctBlack:20.5, pctHisp:7.2, pctAsian:2.5, score:65, note:'Moderate — improving rapidly with growth', scoreRating:3 },
+    airport:{ code:'GSP', nonstops:30, intl:false, note:'~30 nonstops; Charlotte CLT is 90 min drive for major travel', score:2 },
+    healthcare:{ systems:'Prisma Health, Bon Secours St. Francis', rnRisk:'HIGH', policy:'6-week ban upheld SC Supreme Court May 2025; near-total ban SB 323 proposed (30-yr prison for providers)', score:2 },
+  },
+  huntersville: {
+    id:'huntersville', name:'Huntersville', state:'NC', abbr:'HVL',
+    type:'suburb', color:'#0891B2', emoji:'🔷',
+    jobCity:'charlotte', commuteNote:'20–25 min commute to Charlotte',
+    pitch:'Lake Norman lifestyle, very safe, 20 min to CLT — suburban Charlotte at its best',
+    housing:{ median:465000, taxRate:0.0059, bestSuburbs:'Birkdale, Vermillion, Lake Norman shoreline', trend:'Premium Lake Norman demand; strong appreciation', valueBonus:0 },
+    jobs:null, // inherited from charlotte
+    taxes:{ stateRate:0.0425, propRate:0.0059, note:'NC flat 4.25%; Mecklenburg County 0.59% property tax', score:4 },
+    schools:{ rank:'~25th nationally', rating:'A (CMS Lake Norman zone)', district:'Charlotte-Mecklenburg Schools (N. zone)', proficiency:51, score:4 },
+    daycare:{ monthly:1050, score:2 },
+    safety:{ index:25, safest:'Lake Norman suburbs — among safest in NC', score:5 },
+    climate:{ winter:'42°F avg', summer:'87°F avg', outdoorMo:9, hazards:'Occasional ice storms', score:4 },
+    environment:{ air:'Better than urban Charlotte; lake environment improves air', water:'Good — Charlotte Water system (same as CLT)', score:3 },
+    diversity:{ pctWhite:61, pctBlack:19, pctHisp:10, pctAsian:5, score:62, note:'Diverse suburban community; growing Hispanic population', scoreRating:3 },
+    airport:{ code:'CLT', nonstops:180, intl:true, note:'20 min to CLT — best airport access of all suburbs', score:5 },
+    healthcare:{ systems:'Novant Health Huntersville Medical Center, Atrium Health (20 min)', rnRisk:'Low', policy:'NC — same Gov. Stein protections as Charlotte/Raleigh', score:4 },
+  },
+  mooresville: {
+    id:'mooresville', name:'Mooresville', state:'NC', abbr:'MVL',
+    type:'suburb', color:'#0E7490', emoji:'🔹',
+    jobCity:'charlotte', commuteNote:'25–35 min commute to Charlotte',
+    pitch:'Lowest property tax of all 8 cities, Lake Norman, "Race City USA" — best value CLT suburb',
+    housing:{ median:420000, taxRate:0.0045, bestSuburbs:'Langtree, East Mooresville, Brawley School Rd corridor', trend:'Growing fast; lower cost than Huntersville', valueBonus:0.5 },
+    jobs:null,
+    taxes:{ stateRate:0.0425, propRate:0.0045, note:'NC 4.25%; Iredell County 0.45% property tax — lowest of all 8 cities', score:5 },
+    schools:{ rank:'~25th nationally', rating:'A+ (Iredell-Statesville top performers)', district:'Iredell-Statesville Schools', proficiency:53, score:4 },
+    daycare:{ monthly:950, score:3 },
+    safety:{ index:28, safest:'Langtree, Lake Norman suburbs', score:5 },
+    climate:{ winter:'41°F avg', summer:'87°F avg', outdoorMo:9, hazards:'Occasional ice storms', score:4 },
+    environment:{ air:'Good — less urban density than Charlotte', water:'Good — Lake Norman watershed', score:4 },
+    diversity:{ pctWhite:71, pctBlack:13, pctHisp:9, pctAsian:3, score:55, note:'Less diverse than CLT proper; growing suburb', scoreRating:2 },
+    airport:{ code:'CLT', nonstops:180, intl:true, note:'30–40 min to CLT; strong airport access', score:4 },
+    healthcare:{ systems:'Lake Norman Regional Medical Center (Atrium), Atrium Charlotte 35 min', rnRisk:'Low', policy:'NC — same Gov. Stein protections', score:4 },
+  },
+  fort_mill: {
+    id:'fort_mill', name:'Fort Mill', state:'SC', abbr:'FML',
+    type:'suburb', color:'#BE185D', emoji:'🌸',
+    jobCity:'charlotte', commuteNote:'20–25 min commute to Charlotte; SC taxes apply',
+    pitch:'#1 SC school district, safest Carolinas suburb, CLT 20 min — SC income tax is the catch',
+    housing:{ median:390000, taxRate:0.0052, bestSuburbs:'Tega Cay, Baxter Village, Springfield, Fort Mill Township', trend:'Strongest Charlotte suburb demand; steady appreciation', valueBonus:0.5 },
+    jobs:null,
+    taxes:{ stateRate:0.060, propRate:0.0052, note:'SC income tax (up to 6%) applies even working in Charlotte — $3K–$4K more than NC neighbors', score:2 },
+    schools:{ rank:'#1 SC school district', rating:'A+ (Fort Mill SD — top rated SC)', district:'Fort Mill School District', proficiency:58, score:5 },
+    daycare:{ monthly:900, score:4 },
+    safety:{ index:22, safest:'Tega Cay, Baxter Village — among safest in both Carolinas', score:5 },
+    climate:{ winter:'43°F avg', summer:'87°F avg', outdoorMo:9, hazards:'Occasional ice storms', score:4 },
+    environment:{ air:'Good — SC side of border; less CLT urban air', water:'Good — Catawba River system', score:4 },
+    diversity:{ pctWhite:67, pctBlack:15, pctHisp:11, pctAsian:4, score:60, note:'Moderate diversity; growing with Charlotte overflow', scoreRating:3 },
+    airport:{ code:'CLT', nonstops:180, intl:true, note:'20 min to CLT — same as living in south Charlotte', score:5 },
+    healthcare:{ systems:'Piedmont Medical Center, Atrium Pineville (15 min), Novant Ballantyne (15 min)', rnRisk:'HIGH', policy:'SC — same 6-week ban and SB 323 risk as Greenville; same legal exposure for RN', score:3 },
+  },
+  concord: {
+    id:'concord', name:'Concord', state:'NC', abbr:'CON',
+    type:'suburb', color:'#92400E', emoji:'🟤',
+    jobCity:'charlotte', commuteNote:'25–30 min commute to Charlotte',
+    pitch:'Most affordable CLT suburb, diverse growing community — best budget option near Charlotte',
+    housing:{ median:365000, taxRate:0.0061, bestSuburbs:'Harrisburg, NW Concord, Cabarrus neighborhoods', trend:'Affordable eastern CLT suburb; steady growth', valueBonus:0.5 },
+    jobs:null,
+    taxes:{ stateRate:0.0425, propRate:0.0061, note:'NC 4.25%; Cabarrus County 0.61% — comparable to Mecklenburg', score:4 },
+    schools:{ rank:'~25th nationally', rating:'B+/A (Cabarrus County)', district:'Cabarrus County Schools', proficiency:48, score:3 },
+    daycare:{ monthly:950, score:3 },
+    safety:{ index:35, safest:'Harrisburg, NW Concord subdivisions', score:3 },
+    climate:{ winter:'41°F avg', summer:'88°F avg', outdoorMo:9, hazards:'Occasional ice storms', score:4 },
+    environment:{ air:'Moderate — near I-85 corridor has more truck traffic', water:'Good — Coddle Creek reservoir', score:3 },
+    diversity:{ pctWhite:52, pctBlack:23, pctHisp:17, pctAsian:4, score:58, note:'Most diverse suburb in the group; large Hispanic community', scoreRating:3 },
+    airport:{ code:'CLT', nonstops:180, intl:true, note:'25–30 min to CLT; also nearby Concord Regional for GA/charters', score:4 },
+    healthcare:{ systems:'Atrium Health Cabarrus (regional medical center), Atrium Charlotte 30 min', rnRisk:'Low', policy:'NC — same Gov. Stein protections', score:4 },
+  },
+};
+
+const ROLES = {
+  se: {label:'Software Engineer', icon:'👨‍💻'},
+  qa: {label:'QA Engineer', icon:'🔍'},
+  da: {label:'Data Analyst', icon:'📊'},
+  it: {label:'IT Support Specialist', icon:'🖥️'},
+  rn: {label:'Registered Nurse', icon:'👩‍⚕️'},
+  none:{label:'Not comparing / Other', icon:'—'},
+};
+
+const EXP_LEVELS = {
+  entry:  {label:'Entry',  note:'0–3 yrs', mult:0.82},
+  mid:    {label:'Mid',    note:'4–8 yrs', mult:1.0},
+  senior: {label:'Senior', note:'9+ yrs',  mult:1.22},
+};
+
+const PRIORITIES_DEF = [
+  {key:'housing',     label:'🏠 Housing Value',      note:'What your budget buys you'},
+  {key:'jobs',        label:'💼 Job Market',          note:'Salaries and opportunities'},
+  {key:'schools',     label:'🎓 School Quality',      note:'K–12 ratings (if you have kids)'},
+  {key:'taxes',       label:'🧾 Tax Burden',          note:'Income + property taxes'},
+  {key:'safety',      label:'🛡️ Safety',              note:'Crime index, safest suburbs'},
+  {key:'climate',     label:'☀️ Climate',             note:'Year-round livability'},
+  {key:'environment', label:'💨 Air & Water',         note:'Air quality and water safety'},
+  {key:'diversity',   label:'🌍 Diversity',           note:'Ethnic and cultural mix'},
+  {key:'airport',     label:'✈️ Airport Access',      note:'Nonstops and travel ease'},
+  {key:'daycare',     label:'🍼 Childcare Cost',      note:'Monthly daycare (if you have young kids)'},
+];
+
+const PRESETS = {
+  family:    {housing:4, jobs:3, schools:5, taxes:3, safety:5, climate:3, environment:4, diversity:3, airport:2, daycare:5},
+  career:    {housing:3, jobs:5, schools:3, taxes:4, safety:3, climate:3, environment:3, diversity:4, airport:4, daycare:2},
+  cost:      {housing:5, jobs:4, schools:3, taxes:5, safety:3, climate:3, environment:3, diversity:2, airport:2, daycare:4},
+  lifestyle: {housing:3, jobs:3, schools:3, taxes:3, safety:4, climate:5, environment:5, diversity:4, airport:3, daycare:3},
+};
+
+// ═══════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════
+let S = {
+  adults:2, kids:[5,2], budget:500000,
+  role1:'se', exp1:'mid',
+  role2:'rn', exp2:'mid',
+  priorities:{housing:3,jobs:3,schools:3,taxes:3,safety:3,climate:3,environment:3,diversity:3,airport:3,daycare:3},
+  cities:['des_moines','charlotte','raleigh','greenville'],
+};
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  loadFromHash();
+  buildScreen1();
+  buildScreen2();
+  showScreen('screen-1');
+
+  // Theme
+  const tb = document.getElementById('theme-btn');
+  if (localStorage.getItem('theme')==='dark') { document.documentElement.setAttribute('data-theme','dark'); tb.textContent='☀️'; }
+  tb.onclick = () => {
+    const d = document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'':'dark');
+    tb.textContent = d?'🌙':'☀️';
+    localStorage.setItem('theme', d?'':'dark');
+  };
 });
 
-// ── Tabs ──
-function switchTab(section, id) {
-  const sec = document.getElementById(section) || document.querySelector(`#${section}-${id}`)?.closest('section') || document.querySelector(`.section:has(#${section}-${id})`);
-  // Find all panels with this section prefix
-  document.querySelectorAll(`[id^="${section}-"]`).forEach(p => p.classList.remove('active'));
-  const target = document.getElementById(`${section}-${id}`);
-  if (target) { target.classList.add('active'); }
-  // Update tab buttons
-  const tabGroup = target?.closest('section')?.querySelector('.tab-group') || target?.parentElement?.previousElementSibling;
-  if (tabGroup) {
-    tabGroup.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const clickedBtns = Array.from(document.querySelectorAll('.tab-btn')).filter(b => b.onclick?.toString().includes(`'${id}'`));
-    clickedBtns.forEach(b => b.classList.add('active'));
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════
+// SCREEN 1 — BUILD
+// ═══════════════════════════════════════
+function buildScreen1() {
+  renderKids();
+  document.getElementById('budget-slider').value = S.budget;
+  updateBudget(S.budget);
+  buildRoleGrid(1);
+  buildRoleGrid(2);
+  buildExpPills(1);
+  buildExpPills(2);
+}
+
+function adj(field, delta) {
+  if (field === 'adults') {
+    S.adults = Math.max(1, Math.min(6, S.adults + delta));
+    document.getElementById('adults-val').textContent = S.adults;
   }
 }
 
-// ── Scroll nav ──
-function scrollToSection(id) {
-  const el = document.getElementById(id);
-  if (el) { const top = el.getBoundingClientRect().top + window.scrollY - 58; window.scrollTo({ top, behavior: 'smooth' }); }
+function addKid() { S.kids.push(5); renderKids(); }
+function removeKid(i) { S.kids.splice(i,1); renderKids(); }
+function setKidAge(i, v) { S.kids[i] = parseInt(v); }
+
+function renderKids() {
+  const el = document.getElementById('kids-list');
+  if (S.kids.length === 0) { el.innerHTML = '<div class="text2" style="font-size:.8rem;padding:4px 0">No children added</div>'; return; }
+  el.innerHTML = S.kids.map((age,i) => `
+    <div class="kid-row">
+      <span style="font-size:.82rem;color:var(--text2);min-width:58px">Child ${i+1}</span>
+      <select class="form-input form-select" style="padding:7px 30px 7px 10px;font-size:.82rem" onchange="setKidAge(${i},this.value)">
+        ${[...Array(18)].map((_,a) => `<option value="${a+1}" ${age===a+1?'selected':''}>${a+1} yr${a?'s':''}</option>`).join('')}
+      </select>
+      <button class="kid-remove" onclick="removeKid(${i})">✕</button>
+    </div>`).join('');
 }
 
-// ── Active nav highlight ──
-const sections = ['summary','housing','jobs','taxes','schools','diversity','lifestyle','health','scorecard'];
-const navLinks = document.querySelectorAll('.nav-link');
-function updateNav() {
-  let current = 'summary';
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.getBoundingClientRect().top < 80) current = id;
-  });
-  navLinks.forEach(l => {
-    const fn = l.getAttribute('onclick') || '';
-    l.classList.toggle('active', fn.includes(`'${current}'`));
-  });
-  // Scroll active link into view in nav
-  const active = Array.from(navLinks).find(l => l.classList.contains('active'));
-  if (active) active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+function updateBudget(v) {
+  S.budget = parseInt(v);
+  const fmt = v >= 1000000 ? `$${(v/1000000).toFixed(2)}M` : `$${Math.round(v/1000)*1000===v?(v/1000)+'K':v.toLocaleString()}`;
+  document.getElementById('budget-display').textContent = `$${parseInt(v).toLocaleString()}`;
 }
-window.addEventListener('scroll', updateNav, { passive: true });
 
-// ── Fade-in observer ──
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-}, { threshold: 0.05 });
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+function buildRoleGrid(person) {
+  const current = person===1 ? S.role1 : S.role2;
+  const el = document.getElementById(`roles-${person}`);
+  el.innerHTML = Object.entries(ROLES).map(([k,r]) => {
+    if (k==='none') return `<div class="role-card-skip ${current===k?'selected':''}" onclick="selectRole(${person},'${k}')">${r.icon} ${r.label}</div>`;
+    return `<div class="role-card ${current===k?'selected':''}" onclick="selectRole(${person},'${k}')">
+      <div class="role-card-icon">${r.icon}</div>
+      <div class="role-card-name">${r.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectRole(person, role) {
+  if (person===1) { S.role1=role; buildExpPills(1); } else { S.role2=role; buildExpPills(2); }
+  buildRoleGrid(person);
+  const wrap = document.getElementById(`exp${person}-wrap`);
+  if (role==='none') wrap.classList.add('hidden'); else wrap.classList.remove('hidden');
+}
+
+function buildExpPills(person) {
+  const role = person===1 ? S.role1 : S.role2;
+  const exp = person===1 ? S.exp1 : S.exp2;
+  const el = document.getElementById(`exp-pills-${person}`);
+  if (role==='none') { el.innerHTML=''; return; }
+  const refCity = CITIES['raleigh'];
+  const jobData = refCity.jobs[role];
+  if (!jobData) return;
+  el.innerHTML = Object.entries(EXP_LEVELS).map(([k,e]) => {
+    const sal = jobData ? Math.round(jobData.mid * e.mult / 1000)*1000 : 0;
+    return `<div class="exp-pill ${exp===k?'selected':''}" onclick="selectExp(${person},'${k}')">
+      ${e.label}
+      <span class="sal">~$${sal.toLocaleString()}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectExp(person, level) {
+  if (person===1) S.exp1=level; else S.exp2=level;
+  buildExpPills(person);
+}
+
+// ═══════════════════════════════════════
+// SCREEN 2 — BUILD
+// ═══════════════════════════════════════
+function buildScreen2() {
+  buildPrioritySliders();
+  buildCityGrid();
+}
+
+function buildPrioritySliders() {
+  const el = document.getElementById('priority-sliders');
+  el.innerHTML = PRIORITIES_DEF.map(p => `
+    <div class="pslider-row">
+      <div class="pslider-hd">
+        <span class="pslider-lbl">${p.label}</span>
+        <span class="pslider-val" id="pval-${p.key}">${S.priorities[p.key]}</span>
+      </div>
+      <input class="pslider" type="range" min="1" max="5" step="1" value="${S.priorities[p.key]}" 
+        oninput="S.priorities['${p.key}']=parseInt(this.value);document.getElementById('pval-${p.key}').textContent=this.value">
+    </div>`).join('');
+}
+
+function applyPreset(name) {
+  const p = PRESETS[name];
+  Object.assign(S.priorities, p);
+  buildPrioritySliders();
+}
+
+function buildCityGrid() {
+  const el = document.getElementById('city-grid');
+  el.innerHTML = Object.values(CITIES).map(c => {
+    const sel = S.cities.includes(c.id);
+    return `<div class="city-toggle ${sel?'selected':''}" id="ctog-${c.id}" 
+      style="--citycolor:${c.color};${sel?`border-color:${c.color};background:${c.color}10`:''}"
+      onclick="toggleCity('${c.id}')">
+      <div class="city-toggle-check">${sel?'✓':''}</div>
+      <div class="city-toggle-emoji">${c.emoji}</div>
+      <div class="city-toggle-name">${c.name}</div>
+      <div class="city-toggle-sub">${c.state}${c.type==='suburb'?' · Suburb':''}</div>
+      ${c.commuteNote ? `<div style="font-size:.65rem;color:var(--text2);margin-top:2px">${c.commuteNote}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleCity(id) {
+  const idx = S.cities.indexOf(id);
+  if (idx>-1) { if (S.cities.length<=2) return; S.cities.splice(idx,1); }
+  else { if (S.cities.length>=5) return; S.cities.push(id); }
+  buildCityGrid();
+  document.getElementById('city-count').textContent = `${S.cities.length} selected`;
+}
+
+function goToPriorities() {
+  showScreen('screen-2');
+}
+
+// ═══════════════════════════════════════
+// SCORING ENGINE
+// ═══════════════════════════════════════
+function getJobData(city, role) {
+  if (!role || role==='none') return null;
+  const src = city.jobs ? city : CITIES[city.jobCity];
+  return src && src.jobs ? src.jobs[role] : null;
+}
+
+function calcSal(city, role, expKey) {
+  const j = getJobData(city, role);
+  if (!j) return 0;
+  return Math.round(j.mid * EXP_LEVELS[expKey].mult);
+}
+
+function housingScore(city, budget) {
+  const ratio = budget / city.housing.median;
+  let s;
+  if (ratio >= 2.0) s = 5;
+  else if (ratio >= 1.6) s = 4;
+  else if (ratio >= 1.25) s = 3;
+  else if (ratio >= 0.95) s = 2;
+  else s = 1;
+  return Math.min(5, Math.round(s + (city.housing.valueBonus||0)));
+}
+
+function daycareScore(city) {
+  const m = city.daycare.monthly;
+  if (m <= 650) return 5;
+  if (m <= 800) return 4;
+  if (m <= 950) return 3;
+  if (m <= 1050) return 2;
+  return 1;
+}
+
+function jobScore(city) {
+  const j1 = S.role1!=='none' ? (getJobData(city,S.role1)||{score:0}).score : null;
+  const j2 = S.role2!=='none' ? (getJobData(city,S.role2)||{score:0}).score : null;
+  if (j1!==null && j2!==null) return Math.round((j1+j2)/2);
+  if (j1!==null) return j1;
+  if (j2!==null) return j2;
+  return 3;
+}
+
+function scoreCity(cityId) {
+  const c = CITIES[cityId];
+  const hasKids = S.kids.length > 0;
+  const hasYoungKid = S.kids.some(a => a < 5);
+  const hasJob = S.role1!=='none' || S.role2!=='none';
+  const scores = {
+    housing:     housingScore(c, S.budget),
+    jobs:        jobScore(c),
+    schools:     c.schools.score,
+    taxes:       c.taxes.score,
+    safety:      c.safety.score,
+    climate:     c.climate.score,
+    environment: c.environment.score,
+    diversity:   c.diversity.scoreRating,
+    airport:     c.airport.score,
+    daycare:     daycareScore(c),
+  };
+  let total=0, maxTotal=0;
+  PRIORITIES_DEF.forEach(p => {
+    if (p.key==='jobs' && !hasJob) return;
+    if (p.key==='schools' && !hasKids) return;
+    if (p.key==='daycare' && !hasYoungKid) return;
+    const w = S.priorities[p.key];
+    total += scores[p.key] * w;
+    maxTotal += 5 * w;
+  });
+  return { ...scores, total: Math.round((total/maxTotal)*100), cityId };
+}
+
+// ═══════════════════════════════════════
+// RESULTS RENDERER
+// ═══════════════════════════════════════
+function generateResults() {
+  if (S.cities.length < 2) { alert('Please select at least 2 cities.'); return; }
+  saveToHash();
+  showScreen('screen-3');
+
+  const cities = S.cities.map(id => CITIES[id]);
+  const allScores = S.cities.map(id => scoreCity(id));
+  const ranked = [...allScores].sort((a,b) => b.total - a.total);
+
+  const sections = [
+    {id:'overview',     label:'🗺️ Overview'},
+    {id:'housing',      label:'🏠 Housing'},
+    {id:'jobs',         label:'💼 Jobs'},
+    {id:'taxes',        label:'🧾 Taxes'},
+  ];
+  if (S.kids.length > 0) sections.push({id:'schools', label:'🎓 Schools'});
+  sections.push(
+    {id:'lifestyle',    label:'☀️ Lifestyle'},
+    {id:'health',       label:'🏥 Health'},
+    {id:'scorecard',    label:'🏆 Score'},
+  );
+
+  // Build sub-nav
+  document.getElementById('results-subnav').innerHTML = sections.map(s =>
+    `<span class="snav-link" id="snav-${s.id}" onclick="scrollToR('${s.id}')">${s.label}</span>`
+  ).join('');
+
+  // Build content
+  const parts = [
+    renderOverview(cities, ranked),
+    renderHousing(cities),
+    renderJobs(cities),
+    renderTaxes(cities),
+  ];
+  if (S.kids.length > 0) parts.push(renderSchools(cities));
+  parts.push(renderLifestyle(cities));
+  parts.push(renderHealth(cities));
+  parts.push(renderScorecard(cities, allScores, ranked));
+  document.getElementById('results-content').innerHTML = parts.join('');
+
+  // Set up scroll observer for subnav
+  setupScrollObs(sections.map(s => s.id));
+}
+
+function setupScrollObs(ids) {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.snav-link').forEach(l => l.classList.remove('active'));
+        const link = document.getElementById('snav-'+e.target.id);
+        if (link) { link.classList.add('active'); link.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'}); }
+      }
+    });
+  }, {rootMargin:'-40% 0px -55% 0px'});
+  ids.forEach(id => { const el = document.getElementById('r-'+id); if(el) obs.observe(el); });
+}
+
+function scrollToR(id) {
+  const el = document.getElementById('r-'+id);
+  if (el) { const top = el.getBoundingClientRect().top + window.scrollY - 94; window.scrollTo({top, behavior:'smooth'}); }
+}
+
+// ── Helper: comparison grid ──
+function cmpGrid(cities, rows, nCols) {
+  const n = cities.length;
+  const gridCols = `minmax(${Math.max(110,180-n*15)}px,${200-n*10}px) repeat(${n},1fr)`;
+  return `<div class="cmp">
+    <div class="cmp-hdr" style="display:grid;grid-template-columns:${gridCols}">
+      <div class="cmp-hdr-lbl" style="background:var(--bg2);padding:9px 12px"></div>
+      ${cities.map(c=>`<div class="cmp-hdr-city" style="background:${c.color};color:white">${c.name}<br><small style="font-weight:400;opacity:.85">${c.state}</small></div>`).join('')}
+    </div>
+    ${rows.map(row => `
+      <div class="cmp-data-row" style="display:block">
+        <div class="cmp-row-lbl">${row.label}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;background:inherit">
+          ${cities.map(c => `<div class="cmp-cell"><span class="cell-citytag" style="color:${c.color}">${c.emoji} ${c.abbr}</span><span class="cell-val">${row.fn(c)}</span></div>`).join('')}
+        </div>
+        <style>@media(min-width:580px){.cmp-data-row{display:grid!important;grid-template-columns:${gridCols}}.cmp-data-row>div:first-child{display:flex!important;align-items:center}.cmp-data-row>div:not(:first-child){display:flex!important;justify-content:center;flex-direction:column;align-items:center;text-align:center;border-left:1px solid var(--border)}.cell-citytag{display:none!important}}</style>
+      </div>`).join('')}
+  </div>`;
+}
+
+function fmtNum(n) { return n.toLocaleString(); }
+function fmtBudget(n) { return n>=1000000?`$${(n/1000000).toFixed(1)}M`:`$${Math.round(n/1000)}K`; }
+
+function budgetDesc(city, budget) {
+  const ratio = budget / city.housing.median;
+  if (ratio >= 2.0) return `<span class="badge win">Luxury / large new build possible</span>`;
+  if (ratio >= 1.6) return `<span class="badge win">Spacious 4BR+ in top suburbs</span>`;
+  if (ratio >= 1.25) return `Solid 4BR in <em>${city.housing.bestSuburbs.split(',')[0]}</em>`;
+  if (ratio >= 0.95) return `<span class="badge warn">Near median — 3BR options available</span>`;
+  return `<span class="badge bad">Below median — limited options; consider renting first</span>`;
+}
+
+function starStr(score) {
+  const full = Math.round(score);
+  return '⭐'.repeat(Math.min(full,5)) + (full < 5 ? '<span style="opacity:.25">' + '⭐'.repeat(5-full) + '</span>' : '');
+}
+
+// ── Overview ──
+function renderOverview(cities, ranked) {
+  const winner = CITIES[ranked[0].cityId];
+  const budgets = cities.map(c => ({c, ratio: S.budget / c.housing.median}));
+  const bestBudget = [...budgets].sort((a,b)=>b.ratio-a.ratio)[0].c;
+
+  return `<section class="rsection" id="r-overview">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">🗺️</div>
+      <div>
+        <h2 class="rsec-title">Overview</h2>
+        <p class="rsec-sub">${cities.length} cities compared · Budget ${fmtBudget(S.budget)} · ${S.role1!=='none'?ROLES[S.role1].label:''}${S.role2!=='none'?' + '+ROLES[S.role2].label:''}</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:14px">
+      ${cities.map(c => {
+        const sc = ranked.find(r=>r.cityId===c.id);
+        return `<div style="background:var(--card);border:1px solid var(--border);border-top:3px solid ${c.color};border-radius:var(--radius);padding:14px">
+          <div style="font-size:1.4rem;margin-bottom:4px">${c.emoji}</div>
+          <div style="font-weight:800;font-size:.95rem">${c.name}, ${c.state}</div>
+          ${c.commuteNote?`<div style="font-size:.7rem;color:var(--text2)">${c.commuteNote}</div>`:''}
+          <div style="font-size:.75rem;color:var(--text2);margin-top:6px;line-height:1.4">${c.pitch}</div>
+          <div style="margin-top:8px;font-size:.82rem;font-weight:700;color:${c.color}">${sc.total}/100</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="insight">
+      <strong>Quick verdict:</strong> Based on your profile, <strong style="color:${winner.color}">${winner.name}</strong> scores highest at ${ranked[0].total}/100. 
+      ${bestBudget.id !== winner.id ? `Best housing value for your ${fmtBudget(S.budget)} budget: <strong style="color:${bestBudget.color}">${bestBudget.name}</strong> (median $${fmtNum(bestBudget.housing.median)}).` : ''}
+      ${S.role1!=='none'||S.role2!=='none' ? ` Job salaries are highest in ${(() => {
+        const salCities = cities.map(c=>({c, sal:(S.role1!=='none'?calcSal(c,S.role1,S.exp1):0)+(S.role2!=='none'?calcSal(c,S.role2,S.exp2):0)}));
+        const top = salCities.sort((a,b)=>b.sal-a.sal)[0];
+        return `<strong style="color:${top.c.color}">${top.c.name}</strong> (~$${fmtNum(top.sal)}/yr combined)`;
+      })()}.` : ''}
+    </div>
+  </div>
+  </section>`;
+}
+
+// ── Housing ──
+function renderHousing(cities) {
+  return `<section class="rsection" id="r-housing">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">🏠</div>
+      <div>
+        <h2 class="rsec-title">Housing Market</h2>
+        <p class="rsec-sub">What your ${fmtBudget(S.budget)} budget gets you in each city</p>
+      </div>
+    </div>
+    ${cmpGrid(cities, [
+      {label:'Median Home Price (2025–26)', fn: c => `$${fmtNum(c.housing.median)}`},
+      {label:`At Your ${fmtBudget(S.budget)} Budget…`, fn: c => budgetDesc(c, S.budget)},
+      {label:'Property Tax Rate', fn: c => `${(c.housing.taxRate*100).toFixed(2)}%`},
+      {label:'Est. Annual Property Tax', fn: c => `~$${fmtNum(Math.round(S.budget * c.housing.taxRate))}/yr`},
+      {label:'Best Suburbs / Areas', fn: c => c.housing.bestSuburbs},
+      {label:'Market Trend', fn: c => c.housing.trend},
+    ])}
+    <div class="insight">
+      <strong>Budget analysis:</strong>
+      ${(() => {
+        const sorted = [...cities].sort((a,b) => (S.budget/a.housing.median) - (S.budget/b.housing.median)).reverse();
+        const best = sorted[0], worst = sorted[sorted.length-1];
+        const bestRatio = (S.budget/best.housing.median).toFixed(1);
+        return `At ${fmtBudget(S.budget)}, <strong style="color:${best.color}">${best.name}</strong> gives you the most for your money (${bestRatio}× the median price). 
+        ${worst.id!==best.id?`<strong style="color:${worst.color}">${worst.name}</strong> is the tightest fit at $${fmtNum(worst.housing.median)} median.`:''}`;
+      })()}
+    </div>
+  </div>
+  </section>`;
+}
+
+// ── Jobs ──
+function renderJobs(cities) {
+  const hasJ1 = S.role1 !== 'none';
+  const hasJ2 = S.role2 !== 'none';
+  if (!hasJ1 && !hasJ2) return `<section class="rsection" id="r-jobs"><div class="rwrap">
+    <div class="rsec-header"><div class="rsec-icon">💼</div><div><h2 class="rsec-title">Jobs</h2><p class="rsec-sub">No job roles selected — go back to add them</p></div></div>
+    </div></section>`;
+
+  let tabs = '';
+  let panels = '';
+
+  if (hasJ1) {
+    const r = ROLES[S.role1];
+    tabs += `<button class="tab-btn active" onclick="rtab(this,'jobs-1')">Person 1: ${r.icon} ${r.label}</button>`;
+    panels += `<div class="tab-panel active" id="jobs-1">
+      ${cmpGrid(cities, [
+        {label:'Salary Range', fn: c => {const j=getJobData(c,S.role1); return j?j.range:'—'}},
+        {label:`Est. ${EXP_LEVELS[S.exp1].label}-Level Salary`, fn: c => {const s=calcSal(c,S.role1,S.exp1); return s?`<strong>~$${fmtNum(s)}</strong>`:'—'}},
+        {label:'Top Employers', fn: c => {const j=getJobData(c,S.role1); return j?j.employers:'—'}},
+        {label:'Market Score', fn: c => {const j=getJobData(c,S.role1); return j?starStr(j.score):'—'}},
+        ...(S.role1==='rn'?[{label:'Sign-On Bonus', fn: c => {const j=getJobData(c,S.role1); return j&&j.bonus?`<span class="badge win">${j.bonus}</span>`:'Standard'}}]:[]),
+      ])}
+    </div>`;
+  }
+
+  if (hasJ2) {
+    const r = ROLES[S.role2];
+    tabs += `<button class="tab-btn ${!hasJ1?'active':''}" onclick="rtab(this,'jobs-2')">Person 2: ${r.icon} ${r.label}</button>`;
+    panels += `<div class="tab-panel ${!hasJ1?'active':''}" id="jobs-2">
+      ${cmpGrid(cities, [
+        {label:'Salary Range', fn: c => {const j=getJobData(c,S.role2); return j?j.range:'—'}},
+        {label:`Est. ${EXP_LEVELS[S.exp2].label}-Level Salary`, fn: c => {const s=calcSal(c,S.role2,S.exp2); return s?`<strong>~$${fmtNum(s)}</strong>`:'—'}},
+        {label:'Top Employers', fn: c => {const j=getJobData(c,S.role2); return j?j.employers:'—'}},
+        {label:'Market Score', fn: c => {const j=getJobData(c,S.role2); return j?starStr(j.score):'—'}},
+        ...(S.role2==='rn'?[{label:'Sign-On Bonus', fn: c => {const j=getJobData(c,S.role2); return j&&j.bonus?`<span class="badge win">${j.bonus}</span>`:'Standard'}}]:[]),
+      ])}
+    </div>`;
+  }
+
+  if (hasJ1 && hasJ2) {
+    tabs += `<button class="tab-btn" onclick="rtab(this,'jobs-combined')">💰 Combined Income</button>`;
+    panels += `<div class="tab-panel" id="jobs-combined">
+      ${cmpGrid(cities, [
+        {label:`Person 1: ${ROLES[S.role1].label}`, fn: c => {const s=calcSal(c,S.role1,S.exp1); return s?`~$${fmtNum(s)}`:'—'}},
+        {label:`Person 2: ${ROLES[S.role2].label}`, fn: c => {const s=calcSal(c,S.role2,S.exp2); return s?`~$${fmtNum(s)}`:'—'}},
+        {label:'Combined Household Est.', fn: c => {
+          const s1=calcSal(c,S.role1,S.exp1), s2=calcSal(c,S.role2,S.exp2);
+          return s1+s2>0?`<strong>~$${fmtNum(s1+s2)}</strong>`:'—';
+        }},
+        {label:'After NC/IA/SC Income Tax (est.)', fn: c => {
+          const gross=calcSal(c,S.role1,S.exp1)+calcSal(c,S.role2,S.exp2);
+          if(!gross) return '—';
+          const netRate = c.taxes.stateRate;
+          const net = Math.round(gross*(1-netRate));
+          return `~$${fmtNum(net)}`;
+        }},
+      ])}
+      <div class="insight mt12">
+        <strong>Highest combined income:</strong> ${(() => {
+          const salMap = cities.map(c=>({c, sal:calcSal(c,S.role1,S.exp1)+calcSal(c,S.role2,S.exp2)})).sort((a,b)=>b.sal-a.sal);
+          const top = salMap[0], bot = salMap[salMap.length-1];
+          return `<strong style="color:${top.c.color}">${top.c.name}</strong> (~$${fmtNum(top.sal)}/yr). 
+          The gap vs. ${bot.c.name} is ~$${fmtNum(top.sal-bot.sal)}/yr before taxes.`;
+        })()}
+      </div>
+    </div>`;
+  }
+
+  const suburbNote = cities.some(c=>c.type==='suburb') ? `<div class="insight mt12"><strong>Note for suburbs:</strong> ${cities.filter(c=>c.type==='suburb').map(c=>`<strong style="color:${c.color}">${c.name}</strong> inherits <strong style="color:${CITIES[c.jobCity].color}">${CITIES[c.jobCity].name}</strong>'s job market (${c.commuteNote})`).join('; ')}.</div>` : '';
+
+  return `<section class="rsection" id="r-jobs">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">💼</div>
+      <div>
+        <h2 class="rsec-title">Job Markets</h2>
+        <p class="rsec-sub">Salaries and opportunities for your selected roles</p>
+      </div>
+    </div>
+    <div class="tab-row">${tabs}</div>
+    ${panels}
+    ${suburbNote}
+  </div>
+  </section>`;
+}
+
+// ── Taxes ──
+function renderTaxes(cities) {
+  const hasCombinedIncome = (S.role1!=='none' || S.role2!=='none');
+  return `<section class="rsection" id="r-taxes">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">🧾</div>
+      <div>
+        <h2 class="rsec-title">Tax Burden</h2>
+        <p class="rsec-sub">State income tax + property tax on ${fmtBudget(S.budget)} home</p>
+      </div>
+    </div>
+    ${cmpGrid(cities, [
+      {label:'State Income Tax Rate', fn: c => `${(c.taxes.stateRate*100).toFixed(1)}%${c.taxes.stateRate===0.038?' (flat — best)':c.taxes.stateRate===0.0425?' (flat)':' (progressive)'}`},
+      {label:`Est. Income Tax on ${hasCombinedIncome?`$${fmtNum(calcSal(cities[0],S.role1,S.exp1)+calcSal(cities[0],S.role2,S.exp2))} HH`:'$180K HH'}`, fn: c => {
+        const gross = hasCombinedIncome
+          ? calcSal(c,S.role1,S.exp1)+calcSal(c,S.role2,S.exp2)
+          : 180000;
+        return `~$${fmtNum(Math.round(gross*c.taxes.stateRate))}/yr`;
+      }},
+      {label:'Property Tax Rate', fn: c => `${(c.taxes.propRate*100).toFixed(2)}%`},
+      {label:`Est. Annual Property Tax on ${fmtBudget(S.budget)}`, fn: c => {
+        const tax = Math.round(S.budget * c.taxes.propRate);
+        const isHigh = tax > 6000;
+        return `${isHigh?'<span class="badge warn">':''}~$${fmtNum(tax)}/yr${isHigh?'</span>':''}`;
+      }},
+      {label:'Tax Notes', fn: c => c.taxes.note},
+    ])}
+    <div class="insight">
+      <strong>Total annual tax burden</strong> (income + property on ${fmtBudget(S.budget)}):
+      ${cities.map(c => {
+        const gross = hasCombinedIncome ? calcSal(c,S.role1,S.exp1)+calcSal(c,S.role2,S.exp2) : 180000;
+        const total = Math.round(gross*c.taxes.stateRate) + Math.round(S.budget*c.taxes.propRate);
+        return `<strong style="color:${c.color}">${c.name}</strong> ~$${fmtNum(total)}/yr`;
+      }).join(' · ')}
+    </div>
+  </div>
+  </section>`;
+}
+
+// ── Schools ──
+function renderSchools(cities) {
+  const hasYoungKid = S.kids.some(a => a < 5);
+  const kSummary = S.kids.map((a,i)=>`Child ${i+1}: age ${a}`).join(', ');
+  return `<section class="rsection" id="r-schools">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">🎓</div>
+      <div>
+        <h2 class="rsec-title">Schools & Childcare</h2>
+        <p class="rsec-sub">Your children: ${kSummary}</p>
+      </div>
+    </div>
+    ${hasYoungKid?`
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="rtab(this,'sch-k12')">🏫 K–12 Schools</button>
+      <button class="tab-btn" onclick="rtab(this,'sch-daycare')">🍼 Daycare Cost</button>
+    </div>
+    <div class="tab-panel active" id="sch-k12">`:''}
+    ${cmpGrid(cities, [
+      {label:'State K–12 Ranking', fn: c => c.schools.rank},
+      {label:'Suburb School Rating', fn: c => `<span class="badge ${c.schools.score>=4?'win':c.schools.score>=3?'neu':'warn'}">${c.schools.rating}</span>`},
+      {label:'School District', fn: c => c.schools.district},
+      {label:'Math Proficiency (state avg)', fn: c => `~${c.schools.proficiency}%`},
+    ])}
+    ${hasYoungKid?`</div>
+    <div class="tab-panel" id="sch-daycare">
+    ${cmpGrid(cities, [
+      {label:'Monthly Daycare (age 2–4)', fn: c => {
+        const isLow = c.daycare.monthly <= 700;
+        const isHigh = c.daycare.monthly >= 1050;
+        return `${isLow?'<span class="badge win">':''}${isHigh?'<span class="badge warn">':''}$${fmtNum(c.daycare.monthly)}/mo${isLow||isHigh?'</span>':''}`;
+      }},
+      {label:'Annual Daycare Cost', fn: c => `~$${fmtNum(c.daycare.monthly*12)}/yr`},
+      {label:`Savings vs. Most Expensive`, fn: c => {
+        const maxCost = Math.max(...cities.map(x=>x.daycare.monthly));
+        const diff = maxCost - c.daycare.monthly;
+        return diff === 0 ? `<span class="badge warn">Baseline (most expensive)</span>` : `<span class="badge win">Save ~$${fmtNum(diff*12)}/yr</span>`;
+      }},
+    ])}
+    </div>`:''}
+  </div>
+  </section>`;
+}
+
+// ── Lifestyle ──
+function renderLifestyle(cities) {
+  return `<section class="rsection" id="r-lifestyle">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">☀️</div>
+      <div>
+        <h2 class="rsec-title">Lifestyle & Safety</h2>
+        <p class="rsec-sub">Climate, safety, airport access, and community</p>
+      </div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="rtab(this,'life-climate')">☀️ Climate</button>
+      <button class="tab-btn" onclick="rtab(this,'life-safety')">🛡️ Safety</button>
+      <button class="tab-btn" onclick="rtab(this,'life-airport')">✈️ Airport</button>
+      <button class="tab-btn" onclick="rtab(this,'life-diversity')">🌍 Diversity</button>
+    </div>
+    <div class="tab-panel active" id="life-climate">
+    ${cmpGrid(cities, [
+      {label:'Winter Average', fn: c => c.climate.winter},
+      {label:'Summer Average', fn: c => c.climate.summer},
+      {label:'Outdoor Activity Months', fn: c => `~${c.climate.outdoorMo} months/yr`},
+      {label:'Severe Weather Risks', fn: c => c.climate.hazards},
+    ])}
+    </div>
+    <div class="tab-panel" id="life-safety">
+    ${cmpGrid(cities, [
+      {label:'Crime Index (lower = safer)', fn: c => {
+        const isLow = c.safety.index <= 28;
+        const isHigh = c.safety.index >= 45;
+        return `${isLow?'<span class="badge win">':''}${isHigh?'<span class="badge warn">':''}${c.safety.index}${isLow||isHigh?'</span>':''}`;
+      }},
+      {label:'Safest Areas', fn: c => c.safety.safest},
+    ])}
+    </div>
+    <div class="tab-panel" id="life-airport">
+    ${cmpGrid(cities, [
+      {label:'Airport Code', fn: c => c.airport.code},
+      {label:'Nonstop Destinations', fn: c => {
+        const isHigh = c.airport.nonstops >= 100;
+        return `${isHigh?'<span class="badge win">':''}${c.airport.nonstops}+ nonstops${isHigh?'</span>':''}`;
+      }},
+      {label:'International Flights', fn: c => c.airport.intl?'<span class="badge win">Yes — direct intl. routes</span>':'No direct international'},
+      {label:'Notes', fn: c => c.airport.note},
+    ])}
+    </div>
+    <div class="tab-panel" id="life-diversity">
+    ${cmpGrid(cities, [
+      {label:'Diversity Score (/100)', fn: c => `${c.diversity.score}/100`},
+      {label:'White', fn: c => `~${c.diversity.pctWhite}%`},
+      {label:'Black / African American', fn: c => `~${c.diversity.pctBlack}%`},
+      {label:'Hispanic / Latino', fn: c => `~${c.diversity.pctHisp}%`},
+      {label:'Asian', fn: c => `~${c.diversity.pctAsian}%`},
+      {label:'Notes', fn: c => c.diversity.note},
+    ])}
+    </div>
+  </div>
+  </section>`;
+}
+
+// ── Health ──
+function renderHealth(cities) {
+  const hasRN = S.role1==='rn' || S.role2==='rn';
+  return `<section class="rsection" id="r-health">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">🏥</div>
+      <div>
+        <h2 class="rsec-title">Health & Environment</h2>
+        <p class="rsec-sub">Air quality, water safety, hospital systems${hasRN?' · RN career policy':''}
+        </p>
+      </div>
+    </div>
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="rtab(this,'h-env')">💨 Air & Water</button>
+      <button class="tab-btn" onclick="rtab(this,'h-hospitals')">🏨 Hospitals</button>
+      ${hasRN?`<button class="tab-btn" onclick="rtab(this,'h-policy')">⚖️ RN Policy</button>`:''}
+    </div>
+    <div class="tab-panel active" id="h-env">
+    ${cmpGrid(cities, [
+      {label:'Air Quality Grade (ALA 2025)', fn: c => c.environment.air},
+      {label:'Water Safety', fn: c => c.environment.water},
+    ])}
+    </div>
+    <div class="tab-panel" id="h-hospitals">
+    ${cmpGrid(cities, [
+      {label:'Top Hospital Systems', fn: c => c.healthcare.systems},
+      {label:'Hospital Quality', fn: c => starStr(c.healthcare.score)},
+    ])}
+    </div>
+    ${hasRN?`<div class="tab-panel" id="h-policy">
+    ${cmpGrid(cities, [
+      {label:'Current Law', fn: c => c.healthcare.policy},
+      {label:'RN Career Risk', fn: c => {
+        const r = c.healthcare.rnRisk;
+        if (r==='Low') return '<span class="badge win">Low</span>';
+        if (r==='HIGH') return '<span class="badge bad">HIGH ⚠️</span>';
+        return '<span class="badge warn">Moderate</span>';
+      }},
+    ])}
+    <div class="insight mt12">
+      <strong>For your RN career:</strong> Iowa and any SC city (Greenville, Fort Mill) carry legal risk for nurses in women's health settings due to restrictive abortion laws. North Carolina cities benefit from Governor Stein's Executive Order actively protecting healthcare providers. Large academic systems (Duke Health, UNC, Atrium, Novant) provide additional legal cover.
+    </div>
+    </div>`:''}
+  </div>
+  </section>`;
+}
+
+// ── Scorecard ──
+function renderScorecard(cities, allScores, ranked) {
+  const n = cities.length;
+  const gridCols = `minmax(${Math.max(110,180-n*15)}px,${200-n*10}px) repeat(${n},1fr)`;
+  const catKeys = PRIORITIES_DEF.filter(p => {
+    if (p.key==='jobs' && S.role1==='none' && S.role2==='none') return false;
+    if (p.key==='schools' && S.kids.length===0) return false;
+    if (p.key==='daycare' && !S.kids.some(a=>a<5)) return false;
+    return true;
+  });
+
+  const headerRow = `<div style="display:grid;grid-template-columns:${gridCols};border-bottom:2px solid var(--border)">
+    <div style="background:var(--bg2);padding:10px 12px"></div>
+    ${cities.map(c=>`<div style="background:${c.color};color:white;padding:10px 12px;font-size:.72rem;font-weight:700;text-align:center">${c.name}<br><small style="opacity:.85">${c.state}</small></div>`).join('')}
+  </div>`;
+
+  const dataRows = catKeys.map(p => {
+    const scores = cities.map(c => allScores.find(s=>s.cityId===c.id)[p.key]);
+    const maxScore = Math.max(...scores);
+    return `<div style="display:grid;grid-template-columns:${gridCols};border-bottom:1px solid var(--border)">
+      <div style="background:var(--bg2);padding:9px 12px;font-size:.8rem;font-weight:600">${p.label}</div>
+      ${cities.map((c,i) => {
+        const sc = scores[i];
+        const isBest = sc === maxScore && scores.filter(s=>s===maxScore).length < cities.length;
+        return `<div style="padding:9px 12px;text-align:center;border-left:1px solid var(--border);${isBest?`background:rgba(${c.color.replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',')},0.07)`:''}">${starStr(sc)}${isBest?'<div style="font-size:.65rem;font-weight:700;color:'+c.color+'">BEST</div>':''}</div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+
+  return `<section class="rsection" id="r-scorecard">
+  <div class="rwrap">
+    <div class="rsec-header">
+      <div class="rsec-icon">🏆</div>
+      <div>
+        <h2 class="rsec-title">Weighted Scorecard</h2>
+        <p class="rsec-sub">Scores weighted by your priorities (${PRIORITIES_DEF.map(p=>`${p.label.split(' ')[0]}:${S.priorities[p.key]}`).join(' · ')})</p>
+      </div>
+    </div>
+    <div class="score-table">${headerRow}${dataRows}</div>
+    <div class="totals-grid">
+      ${ranked.map((r,i) => {
+        const c = CITIES[r.cityId];
+        const medals = ['🥇','🥈','🥉','🏅','🏅'];
+        return `<div class="total-card ${i===0?'winner':''}" style="${i===0?`border-color:${c.color}`:''}">
+          ${i===0?`<div class="winner-badge" style="background:${c.color}">TOP PICK</div>`:''}
+          <div class="total-city-name" style="color:${c.color}">${c.emoji} ${c.name}</div>
+          <div class="total-score-num" style="color:${c.color}">${r.total}</div>
+          <div class="total-bar-bg"><div class="total-bar-fill" style="background:${c.color};width:${r.total}%"></div></div>
+          <div class="total-rank">${medals[i]} ${i===0?'1st place':i===1?'2nd place':i===2?'3rd place':'4th place'} out of ${n}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="insight" style="border-left-color:${CITIES[ranked[0].cityId].color}">
+      <strong style="color:${CITIES[ranked[0].cityId].color}">Recommendation for your profile:</strong>
+      Based on your ${fmtBudget(S.budget)} budget, 
+      ${S.role1!=='none'?ROLES[S.role1].label+' ('+EXP_LEVELS[S.exp1].label+')':''}
+      ${S.role2!=='none'?'+ '+ROLES[S.role2].label+' ('+EXP_LEVELS[S.exp2].label+')':''}
+      ${S.kids.length>0?', '+S.kids.length+' child'+(S.kids.length>1?'ren':''):''},
+      and your priorities — <strong style="color:${CITIES[ranked[0].cityId].color}">${CITIES[ranked[0].cityId].name}, ${CITIES[ranked[0].cityId].state}</strong> scores highest.
+      ${ranked.length>1?`<strong style="color:${CITIES[ranked[1].cityId].color}">${CITIES[ranked[1].cityId].name}</strong> is a close ${ranked[0].total-ranked[1].total<=5?'runner-up (within 5 points)':'second'}.`:''}
+    </div>
+  </div>
+  </section>`;
+}
+
+// ── Tab switching (results) ──
+function rtab(btn, panelId) {
+  const section = btn.closest('.rsection') || btn.closest('section') || btn.parentElement.parentElement;
+  section.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  section.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// URL SHARING
+// ═══════════════════════════════════════
+function saveToHash() {
+  try {
+    const data = {a:S.adults, k:S.kids, b:S.budget, r1:S.role1, e1:S.exp1, r2:S.role2, e2:S.exp2, p:S.priorities, c:S.cities};
+    window.location.hash = btoa(JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadFromHash() {
+  try {
+    if (!window.location.hash) return;
+    const data = JSON.parse(atob(window.location.hash.slice(1)));
+    if (data.a) S.adults = data.a;
+    if (data.k) S.kids = data.k;
+    if (data.b) S.budget = data.b;
+    if (data.r1) S.role1 = data.r1;
+    if (data.e1) S.exp1 = data.e1;
+    if (data.r2) S.role2 = data.r2;
+    if (data.e2) S.exp2 = data.e2;
+    if (data.p) Object.assign(S.priorities, data.p);
+    if (data.c) S.cities = data.c;
+  } catch(e) {}
+}
+
+function shareApp() {
+  saveToHash();
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }).catch(() => {
+    prompt('Copy this link:', window.location.href);
+  });
+}
 </script>
 </body>
 </html>
